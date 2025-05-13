@@ -10,7 +10,6 @@ import {
   CircularProgress,
   Tabs,
   Tab,
-  alpha,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
@@ -20,7 +19,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { styled } from '@mui/material/styles';
 
 // Enhanced styled components with premium feel
-const CameraContainer = styled(Paper)(({ theme }) => ({
+const CameraContainer = styled(Paper)(() => ({
   position: 'relative',
   width: '100%',
   maxWidth: 600,
@@ -38,17 +37,17 @@ const CameraContainer = styled(Paper)(({ theme }) => ({
   },
 }));
 
-const CameraButton = styled(IconButton)(({ theme }) => ({
+const CameraButton = styled(IconButton)(() => ({
   position: 'absolute',
   bottom: 24,
   left: '50%',
   transform: 'translateX(-50%)',
   width: 72,
   height: 72,
-  backgroundColor: alpha(theme.palette.primary.main, 0.9),
+  backgroundColor: 'rgba(255, 107, 107, 0.9)', // fallback to a close color
   backdropFilter: 'blur(8px)',
   '&:hover': {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: '#FF6B6B',
     transform: 'translateX(-50%) scale(1.05)',
   },
   '& .MuiSvgIcon-root': {
@@ -65,7 +64,7 @@ const PreviewImage = styled('img')(() => ({
   borderRadius: 24,
 }));
 
-const UploadContainer = styled(Paper)(({ theme }) => ({
+const UploadContainer = styled(Paper)(() => ({
   width: '100%',
   maxWidth: 600,
   height: 400,
@@ -84,23 +83,23 @@ const UploadContainer = styled(Paper)(({ theme }) => ({
   },
 }));
 
-const StyledTab = styled(Tab)(({ theme }) => ({
+const StyledTab = styled(Tab)(() => ({
   minHeight: 64,
   fontSize: '1rem',
   fontWeight: 500,
   textTransform: 'none',
   '&.Mui-selected': {
-    color: theme.palette.primary.main,
+    color: '#FF6B6B',
   },
 }));
 
-const AnalyzeButton = styled(Button)(({ theme }) => ({
+const AnalyzeButton = styled(Button)(() => ({
   borderRadius: 16,
   padding: '12px 32px',
   fontSize: '1.1rem',
   fontWeight: 600,
   textTransform: 'none',
-  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #E64A4A 100%)',
   boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
   '&:hover': {
     transform: 'translateY(-2px)',

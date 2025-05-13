@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme, AppBar, Toolbar, Typography, BottomNavigation, BottomNavigationAction, Box, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, BottomNavigation, BottomNavigationAction, Box, CssBaseline } from '@mui/material';
 import Home from './pages/Home';
 import Scan from './pages/Scan';
 import LearningCards from './pages/LearningCards';
 import SharedLearning from './pages/SharedLearning';
-import WonderlandMascot from './components/WonderlandMascot';
 import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 import { useNavigate, useLocation } from 'react-router-dom';

@@ -1,5 +1,5 @@
-import { Box, Container, Typography, Grid, Card, CardActionArea, alpha } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Box, Container, Typography, Grid, Card, CardActionArea } from '@mui/material';
+import { motion } from 'framer-motion';
 import HistoryIcon from '@mui/icons-material/History';
 import ScienceIcon from '@mui/icons-material/Science';
 import CalculateIcon from '@mui/icons-material/Calculate';
@@ -48,7 +48,7 @@ const modules = [
 
 const MotionCard = motion(Card);
 
-const ModuleCard = styled(MotionCard)(({ theme }) => ({
+const ModuleCard = styled(MotionCard)(() => ({
   minWidth: 120,
   maxWidth: 150,
   minHeight: 170,
@@ -68,14 +68,14 @@ const ModuleCard = styled(MotionCard)(({ theme }) => ({
   },
 }));
 
-const IconContainer = styled(Box)(({ theme }) => ({
+const IconContainer = styled(Box)(() => ({
   width: 80,
   height: 80,
   borderRadius: '50%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginBottom: theme.spacing(2),
+  marginBottom: 20,
   background: 'rgba(255,255,255,0.9)',
   backdropFilter: 'blur(8px)',
   boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
