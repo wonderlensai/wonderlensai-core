@@ -1,9 +1,4 @@
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
+import { Box, Container, Typography, Grid, Card, CardActionArea } from '@mui/material';
 import { motion } from 'framer-motion';
 import HistoryIcon from '@mui/icons-material/History';
 import ScienceIcon from '@mui/icons-material/Science';
@@ -189,7 +184,7 @@ const Home = () => {
 
         <Grid container spacing={3} justifyContent="center" alignItems="center" sx={{ flexGrow: 1 }}>
           {modules.map((module, index) => (
-            <Grid key={module.title} item component="div" xs={6} sm={4} md={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Grid key={module.title} item xs={6} sm={4} md={2} sx={{ display: 'flex', justifyContent: 'center' }}>
               <ModuleCard
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.98 }}
