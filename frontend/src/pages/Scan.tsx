@@ -198,7 +198,6 @@ const Scan = () => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [tab, setTab] = useState(0); // 0 = Camera, 1 = Upload
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [customPrompt] = useState('');
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [childAge, setChildAge] = useState<number>(8);
   const [childCountry, setChildCountry] = useState<string>('US');

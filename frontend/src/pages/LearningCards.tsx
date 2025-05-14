@@ -20,6 +20,7 @@ import { styled } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import confetti from 'canvas-confetti';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useSwipeable } from 'react-swipeable';
 
 // Define the lens types and their icons
 const lensIcons: Record<string, any> = {
@@ -96,6 +97,20 @@ const LearningCards = () => {
   const [speaking, setSpeaking] = useState(false);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const [currentSection, setCurrentSection] = useState(0);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (learningData && learningData.lenses) {
+        setCurrentSection((prev) => Math.min(prev + 1, learningData.lenses.length - 1));
+      }
+    },
+    onSwipedRight: () => {
+      if (learningData && learningData.lenses) {
+        setCurrentSection((prev) => Math.max(prev - 1, 0));
+      }
+    },
+    trackMouse: true,
+  });
 
   useEffect(() => {
     if (stateLearningData) {
@@ -223,6 +238,7 @@ const LearningCards = () => {
         ) : (
           <motion.div
             ref={cardRef}
+            {...handlers}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
