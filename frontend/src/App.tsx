@@ -150,7 +150,8 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" element={<AppShell><Home /></AppShell>} />
+          <Route path="/" element={<AppShell><Scan /></AppShell>} />
+          <Route path="/home" element={<AppShell><Home /></AppShell>} />
           <Route path="/scan" element={<AppShell><Scan /></AppShell>} />
           <Route path="/history" element={<AppShell><History /></AppShell>} />
           <Route path="/science" element={<AppShell><Science /></AppShell>} />
