@@ -189,7 +189,6 @@ async function compressImageToBase64(
 }
 
 const Scan = () => {
-  const { subject = 'unknown' } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
