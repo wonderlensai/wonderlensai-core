@@ -14,7 +14,6 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { styled } from '@mui/material/styles';
 
