@@ -179,6 +179,7 @@ const Scan = () => {
   const [tab, setTab] = useState(0); // 0 = Camera, 1 = Upload
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [customPrompt] = useState('');
+  const [cameraError, setCameraError] = useState<string | null>(null);
 
   // Stop camera utility
   const stopCamera = () => {
@@ -192,6 +193,10 @@ const Scan = () => {
 
   useEffect(() => {
     streamRef.current = stream;
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+      console.log('Camera stream set on video element (from useEffect)', stream);
+    }
   }, [stream]);
 
   useEffect(() => {
@@ -331,14 +336,19 @@ const Scan = () => {
   // Camera start/stop logic (if needed)
   const startCamera = async () => {
     try {
+      setCameraError(null);
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
       });
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        console.log('Camera stream set on video element', mediaStream);
+      } else {
+        console.log('videoRef.current is null');
       }
     } catch (error) {
+      setCameraError('Unable to access camera. Please check permissions and try again.');
       console.error('Error accessing camera:', error);
     }
   };
@@ -421,51 +431,54 @@ const Scan = () => {
               transition={{ duration: 0.3 }}
             >
               <CameraContainer>
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
-                {!stream && !capturedImage && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <PhotoCameraIcon sx={{ fontSize: 60, color: 'white', mb: 2 }} />
-                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 500 }}>
-                      Click to start camera
-                    </Typography>
-                  </Box>
-                )}
                 {capturedImage ? (
-                  <PreviewImage src={capturedImage} alt="Preview" />
+                  <>
+                    <PreviewImage src={capturedImage} alt="Preview" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.25)', border: '4px solid #fff', marginTop: 24 }} />
+                    <Box sx={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 2, display: 'flex', gap: 2 }}>
+                      <Button variant="outlined" color="secondary" onClick={() => { setCapturedImage(null); startCamera(); }} sx={{ borderRadius: 8, fontWeight: 600, px: 4, py: 1 }}>
+                        Retake
+                      </Button>
+                      <Button variant="contained" color="primary" onClick={handleAnalyze} sx={{ borderRadius: 8, fontWeight: 600, px: 4, py: 1 }} disabled={isLoading}>
+                        {isLoading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Analyze'}
+                      </Button>
+                    </Box>
+                  </>
                 ) : stream ? (
-                  <CameraButton onClick={handleCapture} disabled={isLoading}>
-                    {isLoading ? (
-                      <CircularProgress size={40} sx={{ color: 'white' }} />
-                    ) : (
-                      <>
-                        <CameraAltIcon />
-                        <Typography variant="caption" sx={{ color: 'white', display: 'block', mt: 1 }}>
-                          Click Picture
-                        </Typography>
-                      </>
-                    )}
-                  </CameraButton>
+                  <>
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <CameraButton onClick={handleCapture} disabled={isLoading}>
+                      {isLoading ? (
+                        <CircularProgress size={40} sx={{ color: 'white' }} />
+                      ) : (
+                        <>
+                          <CameraAltIcon />
+                          <Typography variant="caption" sx={{ color: 'white', display: 'block', mt: 1 }}>
+                            Click Picture
+                          </Typography>
+                        </>
+                      )}
+                    </CameraButton>
+                  </>
                 ) : (
-                  <CameraButton onClick={startCamera}>
-                    <CameraAltIcon />
-                  </CameraButton>
+                  <>
+                    {cameraError && (
+                      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 2, textAlign: 'center' }}>
+                        <Typography variant="h6" sx={{ color: 'white', fontWeight: 700, mb: 2 }}>{cameraError}</Typography>
+                      </Box>
+                    )}
+                    <CameraButton onClick={startCamera}>
+                      <CameraAltIcon />
+                    </CameraButton>
+                  </>
                 )}
               </CameraContainer>
             </motion.div>
@@ -511,7 +524,7 @@ const Scan = () => {
           )}
         </AnimatePresence>
 
-        {(capturedImage || uploadedImage) && (
+        {(uploadedImage) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
