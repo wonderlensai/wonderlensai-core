@@ -46,7 +46,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Comic Sans MS", "Comic Sans", cursive',
+    fontFamily: '"Baloo 2", "Comic Sans MS", "Comic Sans", cursive',
     h1: {
       fontSize: '2.5rem',
       fontWeight: 700,
