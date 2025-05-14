@@ -9,10 +9,24 @@ dotenv.config();
 const app = express();
 
 // CORS middleware at the very top, simplest config
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://wonderlensai-core.vercel.app',
+    'https://www.wonderlens.app',
+    'https://wonderlens.app'
+  ]
+}));
 
 // Explicit OPTIONS handler for all routes
-app.options('*', cors({ origin: 'http://localhost:5173' }));
+app.options('*', cors({
+  origin: [
+    'http://localhost:5173',
+    'https://wonderlensai-core.vercel.app',
+    'https://www.wonderlens.app',
+    'https://wonderlens.app'
+  ]
+}));
 
 // Log all requests
 app.use((req, res, next) => {
@@ -34,5 +48,5 @@ app.use('/api/analyze-image', analyzeRouter);
 const PORT = process.env.PORT || 7001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('CORS enabled for http://localhost:5173');
+  console.log('CORS enabled for http://localhost:5173, https://wonderlensai-core.vercel.app, https://www.wonderlens.app, and https://wonderlens.app');
 }); 

@@ -279,7 +279,7 @@ const Scan = () => {
       console.log('Request payload size:', requestSizeKB, 'KB');
 
       console.log('Sending request to backend...');
-      const response = await fetch('http://localhost:7001/api/analyze-image', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/analyze-image`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
