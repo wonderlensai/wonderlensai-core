@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const analyzeRouter = require('./routes/analyze');
+const { createClient } = require('@supabase/supabase-js');
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,13 @@ app.use(express.json({ limit: '50mb' }));
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Initialize Supabase client for backend (service role key)
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+// You can now use 'supabase' in your backend for DB operations
 
 // Mount the analyze router
 app.use('/api/analyze-image', analyzeRouter);

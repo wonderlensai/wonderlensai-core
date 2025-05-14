@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -11,9 +11,6 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import CelebrationIcon from '@mui/icons-material/Celebration';
-import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
-import QuizIcon from '@mui/icons-material/Quiz';
-import confetti from 'canvas-confetti';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import ExploreIcon from '@mui/icons-material/Explore';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
@@ -21,19 +18,42 @@ import LinkIcon from '@mui/icons-material/Link';
 import PublicIcon from '@mui/icons-material/Public';
 import { styled } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import confetti from 'canvas-confetti';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-// Mock data for development - will be replaced with actual API response
-const mockLearningData = {
-  title: "Ancient Egyptian Pyramid",
-  facts: [
-    "Built over 4,500 years ago!",
-    "Made of about 2.3 million stone blocks",
-    "Each block weighs as much as a car",
-    "The Great Pyramid was the tallest building for 3,800 years"
-  ],
-  funFact: "The pyramids were built so precisely that they align with the stars!",
-  question: "Can you guess how many years it took to build the Great Pyramid?",
-  answer: "It took about 20 years to build the Great Pyramid!"
+// Define the lens types and their icons
+const lensIcons: Record<string, any> = {
+  'Core Identity': <ExploreIcon sx={{ color: '#6C63FF', fontSize: 32, mr: 1 }} />,
+  'How It Works': <LightbulbIcon sx={{ color: '#FFD93D', fontSize: 32, mr: 1 }} />,
+  'Where It Comes From': <PublicIcon sx={{ color: '#4ECDC4', fontSize: 32, mr: 1 }} />,
+  'Where It Started': <LinkIcon sx={{ color: '#FF6B6B', fontSize: 32, mr: 1 }} />,
+  'Safety & Care': <LightbulbIcon sx={{ color: '#95E1D3', fontSize: 32, mr: 1 }} />,
+  'Ecosystem Role': <PublicIcon sx={{ color: '#6C63FF', fontSize: 32, mr: 1 }} />,
+  'Cultural Link': <LinkIcon sx={{ color: '#FFD93D', fontSize: 32, mr: 1 }} />,
+  'Math & Patterns': <LightbulbIcon sx={{ color: '#4ECDC4', fontSize: 32, mr: 1 }} />,
+  'Tiny → Huge Scale': <ExploreIcon sx={{ color: '#FF6B6B', fontSize: 32, mr: 1 }} />,
+  'Environmental Impact': <PublicIcon sx={{ color: '#95E1D3', fontSize: 32, mr: 1 }} />,
+  'Language Hop': <LinkIcon sx={{ color: '#6C63FF', fontSize: 32, mr: 1 }} />,
+  'Career Link': <LightbulbIcon sx={{ color: '#FFD93D', fontSize: 32, mr: 1 }} />,
+  'Future Glimpse': <ExploreIcon sx={{ color: '#4ECDC4', fontSize: 32, mr: 1 }} />,
+  'Fun Fact': <LightbulbIcon sx={{ color: '#FF6B6B', fontSize: 32, mr: 1 }} />,
+};
+
+const lensColors: Record<string, string> = {
+  'Core Identity': '#6C63FF',
+  'How It Works': '#FFD93D',
+  'Where It Comes From': '#4ECDC4',
+  'Where It Started': '#FF6B6B',
+  'Safety & Care': '#95E1D3',
+  'Ecosystem Role': '#6C63FF',
+  'Cultural Link': '#FFD93D',
+  'Math & Patterns': '#4ECDC4',
+  'Tiny → Huge Scale': '#FF6B6B',
+  'Environmental Impact': '#95E1D3',
+  'Language Hop': '#6C63FF',
+  'Career Link': '#FFD93D',
+  'Future Glimpse': '#4ECDC4',
+  'Fun Fact': '#FF6B6B',
 };
 
 const LearningCard = styled(Card)({
@@ -55,52 +75,23 @@ const ImageContainer = styled(Paper)(({ theme }) => ({
   boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
 }));
 
-const sectionMap = [
-  {
-    label: 'Object Introduction',
-    icon: <ExploreIcon sx={{ color: '#6C63FF', fontSize: 32, mr: 1 }} />,
-    key: 'objectIntroduction',
-    color: '#6C63FF',
-  },
-  {
-    label: 'Core Concept',
-    icon: <LightbulbIcon sx={{ color: '#FFD93D', fontSize: 32, mr: 1 }} />,
-    key: 'coreConcept',
-    color: '#FFD93D',
-  },
-  {
-    label: 'Interesting Fact',
-    icon: <EmojiObjectsIcon sx={{ color: '#4ECDC4', fontSize: 32, mr: 1 }} />,
-    key: 'interestingFact',
-    color: '#4ECDC4',
-  },
-  {
-    label: 'Related Knowledge',
-    icon: <LinkIcon sx={{ color: '#FF6B6B', fontSize: 32, mr: 1 }} />,
-    key: 'relatedKnowledge',
-    color: '#FF6B6B',
-  },
-  {
-    label: 'Real-World Connection',
-    icon: <PublicIcon sx={{ color: '#95E1D3', fontSize: 32, mr: 1 }} />,
-    key: 'realWorldConnection',
-    color: '#95E1D3',
-  },
-  {
-    label: 'Extend Learning',
-    icon: <QuizIcon sx={{ color: '#9B59B6', fontSize: 32, mr: 1 }} />,
-    key: 'extendLearning',
-    color: '#9B59B6',
-  },
-];
+interface Lens {
+  name: string;
+  text: string;
+}
+
+interface LearningData {
+  object: string;
+  lenses: Lens[];
+  message?: string;
+}
 
 const LearningCards = () => {
-  const { subject = 'unknown' } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const { imageData, learningData: stateLearningData } = location.state || {};
-  const [learningData, setLearningData] = useState(stateLearningData || mockLearningData);
+  const [learningData, setLearningData] = useState<LearningData | null>(stateLearningData || null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [speaking, setSpeaking] = useState(false);
   const synthRef = useRef<SpeechSynthesis | null>(null);
@@ -111,15 +102,8 @@ const LearningCards = () => {
       setLearningData(stateLearningData);
       console.log('[Frontend] Received learningData from backend:', stateLearningData);
       setIsLoading(false);
-    } else {
-      // Simulate API call for mock data
-      setIsLoading(true);
-      setTimeout(() => {
-        setLearningData(mockLearningData);
-        setIsLoading(false);
-      }, 1500);
     }
-  }, [imageData, subject, stateLearningData]);
+  }, [stateLearningData]);
 
   useEffect(() => {
     synthRef.current = window.speechSynthesis;
@@ -144,28 +128,59 @@ const LearningCards = () => {
     synthRef.current.speak(utter);
   };
 
-  // Map OpenAI response to new structure
-  const structuredData: Record<string, any> = {
-    objectIntroduction: learningData.objectIntroduction || learningData["Object Introduction"] || '',
-    coreConcept: learningData.coreConcept || learningData["Core Concept"] || '',
-    interestingFact: learningData.interestingFact || learningData["Interesting Fact"] || '',
-    relatedKnowledge: learningData.relatedKnowledge || learningData["Related Knowledge"] || [],
-    realWorldConnection: learningData.realWorldConnection || learningData["Real-World Connection"] || '',
-    extendLearning: learningData.extendLearning || learningData["Extend Learning"] || [],
-  };
-
   useEffect(() => {
-    if (!isLoading && cardRef.current) {
+    if (!isLoading && cardRef.current && learningData?.lenses) {
       confetti({
         particleCount: 40,
         spread: 60,
         origin: { y: 0.6 },
-        colors: [sectionMap[currentSection].color, '#fff', '#FFD93D', '#4ECDC4', '#FF6B6B', '#95E1D3'],
+        colors: [lensColors[learningData.lenses[currentSection].name], '#fff', '#FFD93D', '#4ECDC4', '#FF6B6B', '#95E1D3'],
         scalar: 0.7,
       });
     }
-    // eslint-disable-next-line
-  }, [currentSection, isLoading]);
+  }, [currentSection, isLoading, learningData]);
+
+  if (!learningData) {
+    return (
+      <Box
+        sx={{
+          width: '100vw',
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #F7F9FC 0%, #E8F0FE 100%)',
+          py: { xs: 2, sm: 4 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="h5" color="error">
+          No learning data available. Please try scanning again.
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (learningData.object === 'unrecognized') {
+    return (
+      <Box
+        sx={{
+          width: '100vw',
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #F7F9FC 0%, #E8F0FE 100%)',
+          py: { xs: 2, sm: 4 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="h5" color="error">
+          {learningData.message}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -190,7 +205,7 @@ const LearningCards = () => {
             <ArrowBackIcon />
           </IconButton>
           <Typography variant="h4" component="h1" sx={{ color: 'primary.main', fontSize: { xs: '1.5rem', sm: '2rem' }, flex: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1 }}>
-            Learning Cards
+            {learningData.object}
           </Typography>
         </Box>
 
@@ -231,8 +246,8 @@ const LearningCards = () => {
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <LearningCard
                 sx={{
-                  background: `linear-gradient(135deg, ${sectionMap[currentSection].color}20 0%, ${sectionMap[currentSection].color}40 100%)`,
-                  border: `3px solid ${sectionMap[currentSection].color}60`,
+                  background: `linear-gradient(135deg, ${lensColors[learningData.lenses[currentSection].name]}20 0%, ${lensColors[learningData.lenses[currentSection].name]}40 100%)`,
+                  border: `3px solid ${lensColors[learningData.lenses[currentSection].name]}60`,
                   mx: 'auto',
                   width: '100%',
                   maxWidth: 340,
@@ -250,47 +265,29 @@ const LearningCards = () => {
               >
                 <CardContent sx={{ p: 0, width: '100%' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-                    {sectionMap[currentSection].icon}
+                    {lensIcons[learningData.lenses[currentSection].name]}
                     <Typography
                       variant="h5"
                       component="h2"
-                      sx={{ mb: 0, color: sectionMap[currentSection].color, textAlign: 'center', fontSize: { xs: '1.3rem', sm: '1.7rem' }, fontWeight: 700, letterSpacing: 1 }}
+                      sx={{ mb: 0, color: lensColors[learningData.lenses[currentSection].name], textAlign: 'center', fontSize: { xs: '1.3rem', sm: '1.7rem' }, fontWeight: 700, letterSpacing: 1 }}
                     >
-                      {sectionMap[currentSection].label}
+                      {learningData.lenses[currentSection].name}
                     </Typography>
                     <IconButton
-                      onClick={() => handleSpeak(structuredData[sectionMap[currentSection].key])}
+                      onClick={() => handleSpeak(learningData.lenses[currentSection].text)}
                       sx={{ ml: 2, color: speaking ? '#FFD93D' : '#6C63FF', background: speaking ? '#FFFDE7' : 'transparent', transition: 'all 0.2s', boxShadow: speaking ? '0 0 8px #FFD93D' : 'none' }}
                       aria-label="Listen to card"
                     >
                       <VolumeUpIcon sx={{ fontSize: 28 }} />
                     </IconButton>
                   </Box>
-                  <Typography variant="body1" component="div" sx={{ textAlign: 'center', fontSize: { xs: '1.08rem', sm: '1.18rem' }, color: '#333', fontWeight: 500, mt: 2 }}>
-                    {sectionMap[currentSection].key === 'relatedKnowledge' && Array.isArray(structuredData.relatedKnowledge) ? (
-                      <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                        {structuredData.relatedKnowledge.map((fact: string, idx: number) => (
-                          <Typography component="li" variant="body1" key={idx} sx={{ mb: 1, listStyle: 'disc', display: 'list-item', fontSize: { xs: '1.08rem', sm: '1.18rem' }, textAlign: 'center', color: '#333', fontWeight: 500 }}>
-                            {fact}
-                          </Typography>
-                        ))}
+                  <Typography variant="body1" component="div" sx={{ textAlign: 'left', fontSize: { xs: '1.18rem', sm: '1.28rem' }, color: '#333', fontWeight: 500, mt: 2, fontFamily: '"Comic Neue", "Comic Sans MS", "Comic Sans", cursive' }}>
+                    {learningData.lenses[currentSection].text.split(/(?<=[.!?])\s+/).map((sentence, idx) => (
+                      <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                        <CheckCircleIcon sx={{ color: lensColors[learningData.lenses[currentSection].name], fontSize: 18, mt: '2px', mr: 1 }} />
+                        <span>{sentence}</span>
                       </Box>
-                    ) : sectionMap[currentSection].key === 'extendLearning' && Array.isArray(structuredData.extendLearning) ? (
-                      <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                        {structuredData.extendLearning.map((qa: any, idx: number) => (
-                          <Box key={idx} sx={{ mb: 2 }}>
-                            <Typography component="li" variant="body1" sx={{ fontWeight: 700, color: '#6C63FF', listStyle: 'decimal', display: 'list-item', fontSize: { xs: '1.08rem', sm: '1.18rem' } }}>
-                              {qa.question}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: '#333', ml: 2, fontSize: { xs: '1.05rem', sm: '1.12rem' } }}>
-                              {qa.answer}
-                            </Typography>
-                          </Box>
-                        ))}
-                      </Box>
-                    ) : (
-                      structuredData[sectionMap[currentSection].key]
-                    )}
+                    ))}
                   </Typography>
                 </CardContent>
               </LearningCard>
@@ -305,7 +302,7 @@ const LearningCards = () => {
                   alignItems: 'center',
                 }}
               >
-                {sectionMap.map((section, index) => (
+                {learningData.lenses.map((lens, index) => (
                   <motion.div
                     key={index}
                     animate={{ scale: currentSection === index ? 1.3 : 1, opacity: currentSection === index ? 1 : 0.5 }}
@@ -317,10 +314,10 @@ const LearningCards = () => {
                       sx={{
                         width: 20,
                         height: 20,
-                        backgroundColor: currentSection === index ? section.color : 'grey.300',
-                        border: currentSection === index ? `2px solid ${section.color}` : '2px solid #eee',
+                        backgroundColor: currentSection === index ? lensColors[lens.name] : 'grey.300',
+                        border: currentSection === index ? `2px solid ${lensColors[lens.name]}` : '2px solid #eee',
                         '&:hover': {
-                          backgroundColor: currentSection === index ? section.color : 'grey.400',
+                          backgroundColor: currentSection === index ? lensColors[lens.name] : 'grey.400',
                         },
                         p: 0.5,
                         transition: 'all 0.2s',
@@ -330,7 +327,7 @@ const LearningCards = () => {
                   </motion.div>
                 ))}
                 <IconButton
-                  onClick={() => setCurrentSection((prev) => (prev + 1) % sectionMap.length)}
+                  onClick={() => setCurrentSection((prev) => (prev + 1) % learningData.lenses.length)}
                   sx={{
                     ml: 2,
                     backgroundColor: '#FFD93D',

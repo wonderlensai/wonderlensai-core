@@ -13,28 +13,28 @@ const modules = [
     title: 'History',
     icon: <HistoryIcon sx={{ fontSize: 60 }} />,
     color: '#FF6B6B',
-    description: 'Discover the past through pictures!',
+    description: 'Explore historical discoveries!',
     gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)',
   },
   {
     title: 'Science',
     icon: <ScienceIcon sx={{ fontSize: 60 }} />,
     color: '#4ECDC4',
-    description: 'Explore the wonders of science!',
+    description: 'Discover scientific wonders!',
     gradient: 'linear-gradient(135deg, #4ECDC4 0%, #6EE7DE 100%)',
   },
   {
     title: 'Math',
     icon: <CalculateIcon sx={{ fontSize: 60 }} />,
     color: '#FFD93D',
-    description: 'Learn math through real-world objects!',
+    description: 'Explore mathematical concepts!',
     gradient: 'linear-gradient(135deg, #FFD93D 0%, #FFE66D 100%)',
   },
   {
     title: 'Geography',
     icon: <PublicIcon sx={{ fontSize: 60 }} />,
     color: '#95E1D3',
-    description: 'Travel the world through images!',
+    description: 'Discover world geography!',
     gradient: 'linear-gradient(135deg, #95E1D3 0%, #B5F1E3 100%)',
   },
   {
@@ -89,7 +89,7 @@ const Home = () => {
     if (module === 'Shared Learning') {
       navigate('/shared');
     } else {
-      navigate(`/scan/${module.toLowerCase()}`);
+      navigate(`/${module.toLowerCase()}`);
     }
   };
 

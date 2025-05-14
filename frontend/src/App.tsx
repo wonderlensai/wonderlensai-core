@@ -4,6 +4,11 @@ import Home from './pages/Home';
 import Scan from './pages/Scan';
 import LearningCards from './pages/LearningCards';
 import SharedLearning from './pages/SharedLearning';
+import History from './pages/History';
+import Science from './pages/Science';
+import Math from './pages/Math';
+import Geography from './pages/Geography';
+import Learn from './pages/Learn';
 import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -83,8 +88,11 @@ function AppShell({ children }: { children: React.ReactNode }) {
   const [navValue, setNavValue] = useState(0);
 
   useEffect(() => {
-    if (location.pathname.startsWith('/scan')) setNavValue(1);
-    else if (location.pathname.startsWith('/learn')) setNavValue(2);
+    if (location.pathname === '/scan' || location.pathname === '/learning-card') setNavValue(1);
+    else if (
+      location.pathname === '/learn' ||
+      location.pathname.startsWith('/learn/')
+    ) setNavValue(2);
     else if (location.pathname.startsWith('/shared')) setNavValue(3);
     else setNavValue(0);
   }, [location.pathname]);
@@ -112,8 +120,8 @@ function AppShell({ children }: { children: React.ReactNode }) {
         onChange={(_, newValue) => {
           setNavValue(newValue);
           if (newValue === 0) navigate('/');
-          else if (newValue === 1) navigate('/scan/science');
-          else if (newValue === 2) navigate('/learn/science');
+          else if (newValue === 1) navigate('/scan');
+          else if (newValue === 2) navigate('/learn');
           else if (newValue === 3) navigate('/shared');
         }}
         showLabels
@@ -143,7 +151,13 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppShell><Home /></AppShell>} />
-          <Route path="/scan/:subject" element={<AppShell><Scan /></AppShell>} />
+          <Route path="/scan" element={<AppShell><Scan /></AppShell>} />
+          <Route path="/history" element={<AppShell><History /></AppShell>} />
+          <Route path="/science" element={<AppShell><Science /></AppShell>} />
+          <Route path="/math" element={<AppShell><Math /></AppShell>} />
+          <Route path="/geography" element={<AppShell><Geography /></AppShell>} />
+          <Route path="/learning-card" element={<AppShell><LearningCards /></AppShell>} />
+          <Route path="/learn" element={<AppShell><Learn /></AppShell>} />
           <Route path="/learn/:subject" element={<AppShell><LearningCards /></AppShell>} />
           <Route path="/shared" element={<AppShell><SharedLearning /></AppShell>} />
         </Routes>
