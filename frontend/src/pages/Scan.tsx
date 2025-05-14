@@ -217,6 +217,8 @@ const Scan = () => {
       if (ctx) {
         ctx.drawImage(videoRef.current, 0, 0);
         const imageData = canvas.toDataURL('image/jpeg');
+        console.log('[Camera] Captured DataURL:', imageData.substring(0, 100), '...');
+        console.log('[Camera] DataURL length:', imageData.length);
         setCapturedImage(imageData);
         stopCamera();
       }
@@ -233,7 +235,10 @@ const Scan = () => {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
-      setUploadedImage(event.target?.result as string);
+      const result = event.target?.result as string;
+      console.log('[Upload] Uploaded DataURL:', result.substring(0, 100), '...');
+      console.log('[Upload] DataURL length:', result.length);
+      setUploadedImage(result);
       setCapturedImage(null); // clear camera image if any
     };
     reader.readAsDataURL(file);
@@ -246,6 +251,12 @@ const Scan = () => {
       const imageData = uploadedImage || capturedImage;
       if (!imageData) {
         console.log('No image data available');
+        return;
+      }
+      // Validate DataURL
+      if (!imageData.startsWith('data:image/')) {
+        alert('Invalid image data. Please try again.');
+        setIsLoading(false);
         return;
       }
       console.log('Starting image analysis for subject:', subject);
@@ -289,7 +300,12 @@ const Scan = () => {
       
       console.log('Received response from backend:', response.status);
       if (!response.ok) {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = { error: 'Unknown error (no JSON response from server)' };
+        }
         console.error('Backend error:', errorData);
         throw new Error(errorData.error || 'Failed to analyze image');
       }
@@ -438,7 +454,12 @@ const Scan = () => {
                     {isLoading ? (
                       <CircularProgress size={40} sx={{ color: 'white' }} />
                     ) : (
-                      <CameraAltIcon />
+                      <>
+                        <CameraAltIcon />
+                        <Typography variant="caption" sx={{ color: 'white', display: 'block', mt: 1 }}>
+                          Click Picture
+                        </Typography>
+                      </>
                     )}
                   </CameraButton>
                 ) : (
@@ -523,7 +544,7 @@ const Scan = () => {
             }}
           >
             {tab === 0
-              ? 'Point your camera at something interesting or upload an image to learn more about it!'
+              ? 'Click the button to take a picture, then analyze it to learn more!'
               : 'Upload an image to learn more about it!'}
           </Typography>
         </motion.div>
