@@ -9,19 +9,12 @@ import {
   IconButton,
   CircularProgress,
   Tabs,
-  Tab,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
+  Tab
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { styled } from '@mui/material/styles';
-import SettingsIcon from '@mui/icons-material/Settings';
 
 // Enhanced styled components with premium feel
 const CameraContainer = styled(Paper)(() => ({
@@ -113,21 +106,6 @@ const AnalyzeButton = styled(Button)(() => ({
   transition: 'all 0.3s ease',
 }));
 
-// Add country options
-const countries = [
-  { code: 'US', name: 'United States' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'AU', name: 'Australia' },
-  { code: 'IN', name: 'India' },
-  { code: 'JP', name: 'Japan' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'FR', name: 'France' },
-  { code: 'IT', name: 'Italy' },
-  { code: 'ES', name: 'Spain' },
-  // Add more countries as needed
-];
-
 // Utility to compress image to below 100 KB
 async function compressImageToBase64(
   fileOrDataUrl: File | string,
@@ -188,6 +166,31 @@ async function compressImageToBase64(
   });
 }
 
+// Add device info utility
+function generateUUID() {
+  // RFC4122 version 4 compliant UUID generator
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+function getDeviceId(): string {
+  let deviceId = localStorage.getItem('deviceId');
+  if (!deviceId) {
+    deviceId = generateUUID();
+    localStorage.setItem('deviceId', deviceId);
+  }
+  return deviceId;
+}
+function getDeviceInfo() {
+  return {
+    deviceId: getDeviceId(),
+    deviceType: navigator.platform || 'web',
+    osVersion: navigator.userAgent,
+    appVersion: import.meta.env.VITE_APP_VERSION || '1.0.0'
+  };
+}
+
 const Scan = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -198,9 +201,6 @@ const Scan = () => {
   const [tab, setTab] = useState(0); // 0 = Camera, 1 = Upload
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [childAge, setChildAge] = useState<number>(8);
-  const [childCountry, setChildCountry] = useState<string>('US');
-  const [showSettings, setShowSettings] = useState(false);
 
   // Stop camera utility
   const stopCamera = () => {
@@ -225,11 +225,6 @@ const Scan = () => {
       stopCamera();
     };
   }, []);
-
-  const handleBack = () => {
-    stopCamera();
-    navigate('/');
-  };
 
   // Camera capture
   const handleCapture = async () => {
@@ -303,14 +298,18 @@ const Scan = () => {
         console.warn('Compression did not reduce image size!');
       }
 
+      // Add device_info to request
+      const deviceInfo = getDeviceInfo();
+      console.log('Device info to send:', deviceInfo);
+
       console.log('Preparing API request...');
       const requestBody = {
         image: compressedImage,
-        child_age: childAge,
-        child_country: childCountry
+        device_info: deviceInfo
       };
       const requestSizeKB = Math.round(JSON.stringify(requestBody).length / 1024);
       console.log('Request payload size:', requestSizeKB, 'KB');
+      console.log('Request body:', requestBody);
 
       console.log('Sending request to backend...');
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/analyze-image`, {
@@ -390,104 +389,6 @@ const Scan = () => {
       }}
     >
       <Container maxWidth="sm">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-            <IconButton 
-              onClick={handleBack} 
-              sx={{ 
-                mr: 2,
-                backgroundColor: 'rgba(255,255,255,0.8)',
-                backdropFilter: 'blur(8px)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.9)',
-                },
-              }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              sx={{ 
-                color: 'primary.main',
-                fontWeight: 600,
-                letterSpacing: '-0.5px',
-              }}
-            >
-              Wonderlens AI
-            </Typography>
-            <IconButton
-              onClick={() => setShowSettings(!showSettings)}
-              sx={{
-                ml: 'auto',
-                backgroundColor: 'rgba(255,255,255,0.8)',
-                backdropFilter: 'blur(8px)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.9)',
-                },
-              }}
-            >
-              <SettingsIcon />
-            </IconButton>
-          </Box>
-        </motion.div>
-
-        <AnimatePresence>
-          {showSettings && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Paper
-                sx={{
-                  p: 3,
-                  mb: 4,
-                  borderRadius: 3,
-                  background: 'rgba(255,255,255,0.9)',
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                <Typography variant="h6" sx={{ mb: 2 }}>Child Settings</Typography>
-                <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
-                  <TextField
-                    label="Child's Age"
-                    type="number"
-                    value={childAge}
-                    onChange={(e) => {
-                      const age = parseInt(e.target.value);
-                      if (age >= 6 && age <= 10) {
-                        setChildAge(age);
-                      }
-                    }}
-                    inputProps={{ min: 6, max: 10 }}
-                    sx={{ flex: 1 }}
-                  />
-                  <FormControl sx={{ flex: 1 }}>
-                    <InputLabel>Country</InputLabel>
-                    <Select
-                      value={childCountry}
-                      label="Country"
-                      onChange={(e) => setChildCountry(e.target.value)}
-                    >
-                      {countries.map((country) => (
-                        <MenuItem key={country.code} value={country.code}>
-                          {country.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Paper>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <Tabs 
           value={tab} 
           onChange={handleTabChange} 

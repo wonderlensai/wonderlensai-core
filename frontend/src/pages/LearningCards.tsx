@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -17,7 +17,8 @@ import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import LinkIcon from '@mui/icons-material/Link';
 import PublicIcon from '@mui/icons-material/Public';
 import { styled } from '@mui/material/styles';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import confetti from 'canvas-confetti';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useSwipeable } from 'react-swipeable';
@@ -89,7 +90,6 @@ interface LearningData {
 
 const LearningCards = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const { imageData, learningData: stateLearningData } = location.state || {};
   const [learningData, setLearningData] = useState<LearningData | null>(stateLearningData || null);
@@ -211,19 +211,6 @@ const LearningCards = () => {
       }}
     >
       <Box sx={{ width: '100%', maxWidth: 420, mx: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, width: '100%' }}>
-          <IconButton
-            onClick={() => navigate('/')}
-            sx={{ mr: 1 }}
-            aria-label="Back to home"
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h4" component="h1" sx={{ color: 'primary.main', fontSize: { xs: '1.5rem', sm: '2rem' }, flex: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1 }}>
-            {learningData.object}
-          </Typography>
-        </Box>
-
         {isLoading ? (
           <Box
             sx={{
@@ -258,7 +245,25 @@ const LearningCards = () => {
               </ImageContainer>
             )}
 
-            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+              {/* Left Arrow */}
+              <IconButton
+                sx={{
+                  position: 'absolute',
+                  left: -32,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 2,
+                  background: 'rgba(255,255,255,0.8)',
+                  boxShadow: 2,
+                  display: currentSection === 0 ? 'none' : 'flex',
+                }}
+                onClick={() => setCurrentSection((prev) => Math.max(prev - 1, 0))}
+                aria-label="Previous"
+              >
+                <ArrowBackIosNewIcon />
+              </IconButton>
+
               <LearningCard
                 sx={{
                   background: `linear-gradient(135deg, ${lensColors[learningData.lenses[currentSection].name]}20 0%, ${lensColors[learningData.lenses[currentSection].name]}40 100%)`,
@@ -306,6 +311,24 @@ const LearningCards = () => {
                   </Typography>
                 </CardContent>
               </LearningCard>
+
+              {/* Right Arrow */}
+              <IconButton
+                sx={{
+                  position: 'absolute',
+                  right: -32,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 2,
+                  background: 'rgba(255,255,255,0.8)',
+                  boxShadow: 2,
+                  display: currentSection === learningData.lenses.length - 1 ? 'none' : 'flex',
+                }}
+                onClick={() => setCurrentSection((prev) => Math.min(prev + 1, learningData.lenses.length - 1))}
+                aria-label="Next"
+              >
+                <ArrowForwardIosIcon />
+              </IconButton>
 
               <Box
                 sx={{

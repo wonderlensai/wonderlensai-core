@@ -1,237 +1,132 @@
-import { Box, Container, Typography, Grid, Card, CardActionArea } from '@mui/material';
+import React from 'react';
 import { motion } from 'framer-motion';
-import HistoryIcon from '@mui/icons-material/History';
-import ScienceIcon from '@mui/icons-material/Science';
-import CalculateIcon from '@mui/icons-material/Calculate';
-import PublicIcon from '@mui/icons-material/Public';
-import ShareIcon from '@mui/icons-material/Share';
 import { useNavigate } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
+import WonderLensDaily from '../components/WonderLensDaily';
+import {
+  FaHistory,
+  FaFlask,
+  FaCalculator,
+  FaGlobeAmericas,
+} from 'react-icons/fa';
 
 const modules = [
   {
-    title: 'History',
-    icon: <HistoryIcon sx={{ fontSize: 60 }} />,
-    color: '#FF6B6B',
-    description: 'Explore historical discoveries!',
-    gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)',
+    title: 'Science',
+    icon: <FaFlask className="text-teal-500" />,
+    desc: 'Discover scientific wonders!',
+    route: '/science',
+    bg: 'from-cyan-200 to-teal-100',
   },
   {
-    title: 'Science',
-    icon: <ScienceIcon sx={{ fontSize: 60 }} />,
-    color: '#4ECDC4',
-    description: 'Discover scientific wonders!',
-    gradient: 'linear-gradient(135deg, #4ECDC4 0%, #6EE7DE 100%)',
+    title: 'History',
+    icon: <FaHistory className="text-pink-400" />,
+    desc: 'Explore historical discoveries!',
+    route: '/history',
+    bg: 'from-pink-200 to-pink-100',
   },
   {
     title: 'Math',
-    icon: <CalculateIcon sx={{ fontSize: 60 }} />,
-    color: '#FFD93D',
-    description: 'Explore mathematical concepts!',
-    gradient: 'linear-gradient(135deg, #FFD93D 0%, #FFE66D 100%)',
+    icon: <FaCalculator className="text-yellow-400" />,
+    desc: 'Explore mathematical concepts!',
+    route: '/math',
+    bg: 'from-yellow-200 to-yellow-100',
   },
   {
     title: 'Geography',
-    icon: <PublicIcon sx={{ fontSize: 60 }} />,
-    color: '#95E1D3',
-    description: 'Discover world geography!',
-    gradient: 'linear-gradient(135deg, #95E1D3 0%, #B5F1E3 100%)',
-  },
-  {
-    title: 'Shared Learning',
-    icon: <ShareIcon sx={{ fontSize: 60 }} />,
-    color: '#9B59B6',
-    description: 'See what others are learning!',
-    gradient: 'linear-gradient(135deg, #9B59B6 0%, #B39DDB 100%)',
+    icon: <FaGlobeAmericas className="text-green-400" />,
+    desc: 'Discover world geography!',
+    route: '/geography',
+    bg: 'from-green-200 to-green-100',
   },
 ];
 
-const MotionCard = motion(Card);
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.96 },
+  visible: { opacity: 1, scale: 1 },
+};
 
-const ModuleCard = styled(MotionCard)(() => ({
-  minWidth: 120,
-  maxWidth: 150,
-  minHeight: 170,
-  maxHeight: 200,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  background: 'rgba(255,255,255,0.8)',
-  backdropFilter: 'blur(8px)',
-  border: '1px solid rgba(255,255,255,0.2)',
-  borderRadius: 24,
-  boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    boxShadow: '0 12px 48px rgba(0,0,0,0.12)',
-  },
-}));
-
-const IconContainer = styled(Box)(() => ({
-  width: 80,
-  height: 80,
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: 20,
-  background: 'rgba(255,255,255,0.9)',
-  backdropFilter: 'blur(8px)',
-  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-  transition: 'all 0.3s ease',
-}));
+function CategoryCard({ icon, title, desc, onClick, bg }: { icon: React.ReactNode; title: string; desc: string; onClick: () => void; bg: string }) {
+  return (
+    <motion.div
+      variants={cardVariants}
+      whileHover={{ scale: 1.08 }}
+      whileTap={{ scale: 0.97 }}
+      className={`flex flex-col items-center justify-center rounded-3xl shadow-xl p-6 min-w-[140px] min-h-[170px] cursor-pointer bg-gradient-to-br ${bg} transition-transform hover:shadow-2xl border-2 border-white`}
+      onClick={onClick}
+    >
+      <div className="text-5xl mb-2 drop-shadow-lg">{icon}</div>
+      <div className="text-lg font-extrabold text-center mb-1 text-gray-700 font-[Fredoka]">{title}</div>
+      <div className="text-xs text-gray-600 text-center font-semibold">{desc}</div>
+    </motion.div>
+  );
+}
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const handleModuleClick = (module: string) => {
-    if (module === 'Shared Learning') {
-      navigate('/shared');
-    } else {
-      navigate(`/${module.toLowerCase()}`);
-    }
-  };
-
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #F7F9FC 0%, #E8F0FE 100%)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {/* Animated background elements */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          overflow: 'hidden',
-          zIndex: 0,
-        }}
-      >
-        {modules.map((module, index) => (
-          <motion.div
-            key={module.title}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.1, scale: 1 }}
-            transition={{
-              duration: 2,
-              delay: index * 0.2,
-              repeat: Infinity,
-              repeatType: 'reverse',
-            }}
-            style={{
-              position: 'absolute',
-              width: '300px',
-              height: '300px',
-              borderRadius: '50%',
-              background: module.gradient,
-              filter: 'blur(40px)',
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        ))}
-      </Box>
-
-      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-        >
-          <Typography
-            variant="h1"
-            component="h1"
-            align="center"
-            sx={{
-              mb: 2,
-              color: 'primary.main',
-              fontWeight: 700,
-              letterSpacing: '-1px',
-              fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
-              textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-            }}
-          >
-            Wonderlens AI
-          </Typography>
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{
-              mb: 6,
-              color: 'text.secondary',
-              fontSize: { xs: '1.1rem', sm: '1.3rem' },
-              fontWeight: 500,
-              maxWidth: '600px',
-              mx: 'auto',
-            }}
-          >
-            Scan and learn from the world around you!
-          </Typography>
+    <div className="w-full min-h-screen flex flex-col items-center bg-gradient-to-br from-yellow-50 to-blue-100 px-2 pt-8 pb-28 relative overflow-x-hidden">
+      {/* Animated playful background shapes */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute top-10 left-5 w-24 h-24 rounded-full bg-gradient-to-br from-pink-200 to-yellow-100 opacity-20 animate-float1" />
+        <div className="absolute bottom-16 right-8 w-32 h-32 rounded-full bg-gradient-to-br from-teal-200 to-pink-200 opacity-15 animate-float2" />
+        <div className="absolute top-48 right-20 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 to-indigo-200 opacity-10 animate-float3" />
+        <style>{`
+          @keyframes float1 { 0%{transform:translateY(0);} 50%{transform:translateY(-20px);} 100%{transform:translateY(0);} }
+          @keyframes float2 { 0%{transform:translateY(0);} 50%{transform:translateY(30px);} 100%{transform:translateY(0);} }
+          @keyframes float3 { 0%{transform:translateY(0);} 50%{transform:translateY(-15px);} 100%{transform:translateY(0);} }
+        `}</style>
+      </div>
+      <div className="relative z-10 w-full max-w-md mx-auto flex flex-col items-center">
+        {/* WonderLens Daily */}
+        <motion.div variants={cardVariants} className="w-full mb-6 rounded-2xl bg-white/80 shadow-lg p-4">
+          <h2 className="text-lg font-bold mb-2 text-center text-blue-600">✨ WonderLens Daily ✨</h2>
+          <WonderLensDaily country="global" age={8} />
         </motion.div>
 
-        <Grid container spacing={3} justifyContent="center" alignItems="center" sx={{ flexGrow: 1 }}>
-          {modules.map((module, index) => (
-            <Grid key={module.title} item xs={6} sm={4} md={2} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <ModuleCard
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-              >
-                <CardActionArea
-                  sx={{ height: '100%', p: 2 }}
-                  onClick={() => handleModuleClick(module.title)}
-                >
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                    <IconContainer>
-                      <Box sx={{ color: module.color }}>{module.icon}</Box>
-                    </IconContainer>
-                    <Typography
-                      variant="h6"
-                      component="h2"
-                      sx={{
-                        mb: 1,
-                        color: module.color,
-                        fontWeight: 700,
-                        textAlign: 'center',
-                        fontSize: '1.1rem',
-                      }}
-                    >
-                      {module.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'text.secondary',
-                        textAlign: 'center',
-                        fontSize: '0.9rem',
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {module.description}
-                    </Typography>
-                  </Box>
-                </CardActionArea>
-              </ModuleCard>
-            </Grid>
+        {/* Main modules grid */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+          className="grid grid-cols-2 gap-6 mb-10 w-full"
+        >
+          {modules.map((m) => (
+            <CategoryCard
+              key={m.title}
+              icon={m.icon}
+              title={m.title}
+              desc={m.desc}
+              bg={m.bg}
+              onClick={() => navigate(m.route)}
+            />
           ))}
-        </Grid>
-      </Container>
-    </Box>
+        </motion.div>
+
+        {/* Ask a Question CTA */}
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          className="w-full px-8 py-4 bg-gradient-to-r from-pink-400 via-yellow-300 to-blue-300 text-white text-lg font-extrabold rounded-full shadow-xl hover:scale-105 transition-all duration-150 mb-10 border-4 border-white"
+        >
+          <span role="img" aria-label="question">❓</span> Ask a Question
+        </motion.button>
+
+        {/* Shared Learning */}
+        <motion.div
+          variants={cardVariants}
+          className="w-full bg-white rounded-2xl shadow p-6 text-center mb-4"
+        >
+          <h3 className="text-base font-bold mb-2 text-purple-700">Shared Learning</h3>
+          <p className="text-gray-600 mb-4">See what others are learning!</p>
+          <button
+            className="w-full px-6 py-2 bg-gradient-to-r from-purple-400 to-pink-300 hover:from-purple-500 hover:to-pink-400 text-white font-bold rounded-xl shadow transition-all duration-200"
+            onClick={() => navigate('/shared')}
+          >
+            Explore Shared Learning
+          </button>
+        </motion.div>
+      </div>
+    </div>
   );
 };
 

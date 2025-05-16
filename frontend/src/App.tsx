@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme, BottomNavigation, BottomNavigationAction, Box, CssBaseline } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import Home from './pages/Home';
 import Scan from './pages/Scan';
 import LearningCards from './pages/LearningCards';
@@ -13,10 +13,7 @@ import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import HomeIcon from '@mui/icons-material/Home';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import SchoolIcon from '@mui/icons-material/School';
-import ShareIcon from '@mui/icons-material/Share';
+import { FaHome, FaCamera, FaGraduationCap, FaShareAlt } from 'react-icons/fa';
 
 // Kid-friendly theme with playful colors
 const theme = createTheme({
@@ -98,49 +95,40 @@ function AppShell({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <Box sx={{ minHeight: '100vh', fontFamily: 'Nunito, sans-serif', background: 'linear-gradient(135deg, #e0e7ff 0%, #fceabb 100%)', position: 'relative' }}>
-      <CssBaseline />
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100 relative font-sans">
       {/* Animated background shapes */}
-      <Box sx={{ position: 'fixed', zIndex: 0, top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', overflow: 'hidden' }}>
-        {/* Example floating shapes */}
-        <Box sx={{ position: 'absolute', top: 40, left: 20, width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg, #6C63FF 60%, #FFD93D 100%)', opacity: 0.18, animation: 'float1 8s ease-in-out infinite' }} />
-        <Box sx={{ position: 'absolute', bottom: 60, right: 30, width: 120, height: 120, borderRadius: '50%', background: 'linear-gradient(135deg, #4ECDC4 60%, #FF6B6B 100%)', opacity: 0.13, animation: 'float2 10s ease-in-out infinite' }} />
-        <Box sx={{ position: 'absolute', top: 200, right: 80, width: 60, height: 60, borderRadius: '50%', background: 'linear-gradient(135deg, #FFD93D 60%, #6C63FF 100%)', opacity: 0.12, animation: 'float3 12s ease-in-out infinite' }} />
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute top-10 left-5 w-20 h-20 rounded-full bg-gradient-to-br from-indigo-300 to-yellow-200 opacity-20 animate-float1" />
+        <div className="absolute bottom-16 right-8 w-32 h-32 rounded-full bg-gradient-to-br from-teal-200 to-pink-200 opacity-15 animate-float2" />
+        <div className="absolute top-48 right-20 w-14 h-14 rounded-full bg-gradient-to-br from-yellow-200 to-indigo-200 opacity-10 animate-float3" />
         <style>{`
           @keyframes float1 { 0%{transform:translateY(0);} 50%{transform:translateY(-20px);} 100%{transform:translateY(0);} }
           @keyframes float2 { 0%{transform:translateY(0);} 50%{transform:translateY(30px);} 100%{transform:translateY(0);} }
           @keyframes float3 { 0%{transform:translateY(0);} 50%{transform:translateY(-15px);} 100%{transform:translateY(0);} }
         `}</style>
-      </Box>
+      </div>
       {/* Main content */}
-      <Box sx={{ position: 'relative', zIndex: 1, pb: 10 }}>{children}</Box>
-      {/* Bottom Navigation */}
-      <BottomNavigation
-        value={navValue}
-        onChange={(_, newValue) => {
-          setNavValue(newValue);
-          if (newValue === 0) navigate('/');
-          else if (newValue === 1) navigate('/scan');
-          else if (newValue === 2) navigate('/learn');
-          else if (newValue === 3) navigate('/shared');
-        }}
-        showLabels
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100vw',
-          background: 'rgba(255,255,255,0.95)',
-          boxShadow: '0 -2px 12px rgba(0,0,0,0.04)',
-          zIndex: 10,
-        }}
-      >
-        <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-        <BottomNavigationAction label="Scan" icon={<CameraAltIcon />} />
-        <BottomNavigationAction label="Learn" icon={<SchoolIcon />} />
-        <BottomNavigationAction label="Shared" icon={<ShareIcon />} />
-      </BottomNavigation>
-    </Box>
+      <main className="relative z-10 flex-1 pb-24 px-2 sm:px-0">{children}</main>
+      {/* Colorful Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 w-full z-20 bg-gradient-to-r from-pink-200 via-yellow-100 to-blue-200 shadow-t flex justify-around items-center h-20 rounded-t-3xl border-t border-gray-100">
+        <button className={`flex flex-col items-center text-xs font-bold focus:outline-none transition-all ${navValue===0?'text-pink-500 scale-110':'text-gray-400'}`} onClick={()=>{setNavValue(0);navigate('/');}}>
+          <FaHome className="text-2xl mb-1" />
+          Home
+        </button>
+        <button className={`flex flex-col items-center text-xs font-bold focus:outline-none transition-all ${navValue===1?'text-teal-500 scale-110':'text-gray-400'}`} onClick={()=>{setNavValue(1);navigate('/scan');}}>
+          <FaCamera className="text-2xl mb-1" />
+          Scan
+        </button>
+        <button className={`flex flex-col items-center text-xs font-bold focus:outline-none transition-all ${navValue===2?'text-yellow-500 scale-110':'text-gray-400'}`} onClick={()=>{setNavValue(2);navigate('/learn');}}>
+          <FaGraduationCap className="text-2xl mb-1" />
+          Learn
+        </button>
+        <button className={`flex flex-col items-center text-xs font-bold focus:outline-none transition-all ${navValue===3?'text-purple-500 scale-110':'text-gray-400'}`} onClick={()=>{setNavValue(3);navigate('/shared');}}>
+          <FaShareAlt className="text-2xl mb-1" />
+          Shared
+        </button>
+      </nav>
+    </div>
   );
 }
 
@@ -150,8 +138,8 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" element={<AppShell><Scan /></AppShell>} />
-          <Route path="/home" element={<AppShell><Home /></AppShell>} />
+          <Route path="/" element={<AppShell><Home /></AppShell>} />
+          <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/scan" element={<AppShell><Scan /></AppShell>} />
           <Route path="/history" element={<AppShell><History /></AppShell>} />
           <Route path="/science" element={<AppShell><Science /></AppShell>} />

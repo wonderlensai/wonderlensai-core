@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
   Typography,
-  IconButton,
   Paper,
   CircularProgress,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { styled } from '@mui/material/styles';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
@@ -84,7 +81,6 @@ function generateConnections(nodes: any[]) {
 }
 
 const SharedLearning = () => {
-  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [nodes, setNodes] = useState<any[]>([]);
@@ -131,17 +127,6 @@ const SharedLearning = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-          <IconButton
-            onClick={() => navigate('/')}
-            sx={{ mr: 2 }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h4" component="h1" sx={{ color: 'primary.main' }}>
-            What Others Are Learning
-          </Typography>
-        </Box>
         <NetworkContainer ref={containerRef}>
           {containerSize.width > 100 && containerSize.height > 100 ? (
             isLoading ? (
