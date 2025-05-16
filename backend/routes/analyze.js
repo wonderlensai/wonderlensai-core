@@ -149,7 +149,7 @@ Return **only** valid JSON in this schema:
 `;
     console.log('[OpenAI] Combined WonderLens prompt sent:', prompt);
     const response = await openai.chat.completions.create({
-      model: 'gpt-4.1',
+      model: 'gpt-4.1-mini',
       messages: [
         { role: 'system', content: prompt },
         { role: 'user', content: [{ type: 'image_url', image_url: { url: image } }] }
