@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
+  "include": [
+    "src",
+    "src/declarations.d.ts"
+  ]
+} 
