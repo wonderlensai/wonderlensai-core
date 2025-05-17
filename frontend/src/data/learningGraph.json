@@ -1,0 +1,51 @@
+{
+  "nodes": [
+    { "id": "user1", "name": "Emma", "group": "user", "val": 10 },
+    { "id": "user2", "name": "Noah", "group": "user", "val": 8 },
+    { "id": "user3", "name": "Olivia", "group": "user", "val": 12 },
+    { "id": "user4", "name": "Liam", "group": "user", "val": 7 },
+    { "id": "user5", "name": "Ava", "group": "user", "val": 9 },
+    
+    { "id": "history1", "name": "Ancient Egypt", "group": "history", "val": 15 },
+    { "id": "history2", "name": "World War II", "group": "history", "val": 18 },
+    { "id": "history3", "name": "Renaissance", "group": "history", "val": 12 },
+    
+    { "id": "science1", "name": "Solar System", "group": "science", "val": 14 },
+    { "id": "science2", "name": "Human Body", "group": "science", "val": 16 },
+    { "id": "science3", "name": "Ecosystems", "group": "science", "val": 13 },
+    
+    { "id": "math1", "name": "Fractions", "group": "math", "val": 10 },
+    { "id": "math2", "name": "Geometry", "group": "math", "val": 12 },
+    { "id": "math3", "name": "Algebra", "group": "math", "val": 15 },
+    
+    { "id": "geography1", "name": "Continents", "group": "geography", "val": 11 },
+    { "id": "geography2", "name": "Oceans", "group": "geography", "val": 9 },
+    { "id": "geography3", "name": "Countries", "group": "geography", "val": 14 }
+  ],
+  "links": [
+    { "source": "user1", "target": "history1", "value": 5 },
+    { "source": "user1", "target": "science2", "value": 8 },
+    { "source": "user1", "target": "user3", "value": 2 },
+    
+    { "source": "user2", "target": "math1", "value": 6 },
+    { "source": "user2", "target": "math3", "value": 7 },
+    { "source": "user2", "target": "user5", "value": 3 },
+    
+    { "source": "user3", "target": "science1", "value": 9 },
+    { "source": "user3", "target": "geography3", "value": 4 },
+    { "source": "user3", "target": "user4", "value": 2 },
+    
+    { "source": "user4", "target": "history2", "value": 7 },
+    { "source": "user4", "target": "geography1", "value": 5 },
+    { "source": "user4", "target": "user1", "value": 1 },
+    
+    { "source": "user5", "target": "math2", "value": 8 },
+    { "source": "user5", "target": "science3", "value": 6 },
+    { "source": "user5", "target": "user2", "value": 3 },
+    
+    { "source": "history1", "target": "history3", "value": 2 },
+    { "source": "science1", "target": "science2", "value": 3 },
+    { "source": "math1", "target": "math2", "value": 4 },
+    { "source": "geography1", "target": "geography2", "value": 2 }
+  ]
+} 
