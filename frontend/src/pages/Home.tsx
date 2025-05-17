@@ -1,133 +1,200 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import WonderLensDaily from '../components/WonderLensDaily';
-import {
-  FaHistory,
-  FaFlask,
-  FaCalculator,
-  FaGlobeAmericas,
-} from 'react-icons/fa';
+import React, { useState } from "react";
+import { FaRocket, FaPalette, FaTree } from "react-icons/fa";
+import SocialGraph from "../components/SocialGraph";
+// import WonderLensDaily from "../components/WonderLensDaily"; // Uncomment if using this component
 
-const modules = [
+// --- Image URLs with image transformation parameters ---
+// Increasing width to 400px for the logo
+const LOGO_URL = "https://zgbkpnceymplssmpxgsi.supabase.co/storage/v1/object/public/assets//Header_log.png?width=300&quality=90";
+
+const NEWS_AVATARS = [
   {
-    title: 'Science',
-    icon: <FaFlask className="text-teal-500" />,
-    desc: 'Discover scientific wonders!',
-    route: '/science',
-    bg: 'from-cyan-200 to-teal-100',
+    title: "Puppy News",
+    image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=200&h=200&auto=format&fit=crop",
   },
   {
-    title: 'History',
-    icon: <FaHistory className="text-pink-400" />,
-    desc: 'Explore historical discoveries!',
-    route: '/history',
-    bg: 'from-pink-200 to-pink-100',
+    title: "Rainbow City",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=200&auto=format&fit=crop",
   },
   {
-    title: 'Math',
-    icon: <FaCalculator className="text-yellow-400" />,
-    desc: 'Explore mathematical concepts!',
-    route: '/math',
-    bg: 'from-yellow-200 to-yellow-100',
+    title: "Super Cat",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=200&auto=format&fit=crop",
   },
   {
-    title: 'Geography',
-    icon: <FaGlobeAmericas className="text-green-400" />,
-    desc: 'Discover world geography!',
-    route: '/geography',
-    bg: 'from-green-200 to-green-100',
+    title: "Super Cat",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=200&auto=format&fit=crop",
+  },
+  {
+    title: "Super Cat",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=200&auto=format&fit=crop",
+  },
+  {
+    title: "Super Cat",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=200&auto=format&fit=crop",
   },
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.96 },
-  visible: { opacity: 1, scale: 1 },
-};
+const QUIZZES = [
+  {
+    label: "Space Quiz",
+    icon: <FaRocket size={16} />,
+    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=120&h=120&auto=format&fit=crop",
+  },
+  {
+    label: "Art Quiz",
+    icon: <FaPalette size={16} />,
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=120&h=120&auto=format&fit=crop",
+  },
+  {
+    label: "Nature Quiz",
+    icon: <FaTree size={16} />,
+    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=120&h=120&auto=format&fit=crop",
+  },
+];
 
-function CategoryCard({ icon, title, desc, onClick, bg }: { icon: React.ReactNode; title: string; desc: string; onClick: () => void; bg: string }) {
+const SHARED_LEARNING_IMAGE =
+  "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=400&h=200&auto=format&fit=crop";
+
+const Home: React.FC = () => {
+  const [selectedNews, setSelectedNews] = useState(0);
+
   return (
-    <motion.div
-      variants={cardVariants}
-      whileHover={{ scale: 1.08 }}
-      whileTap={{ scale: 0.97 }}
-      className={`flex flex-col items-center justify-center rounded-3xl shadow-xl p-6 min-w-[140px] min-h-[170px] cursor-pointer bg-gradient-to-br ${bg} transition-transform hover:shadow-2xl border-2 border-white`}
-      onClick={onClick}
-    >
-      <div className="text-5xl mb-2 drop-shadow-lg">{icon}</div>
-      <div className="text-lg font-extrabold text-center mb-1 text-gray-700 font-[Fredoka]">{title}</div>
-      <div className="text-xs text-gray-600 text-center font-semibold">{desc}</div>
-    </motion.div>
-  );
-}
-
-const Home = () => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-gradient-to-br from-yellow-50 to-blue-100 px-2 pt-8 pb-28 relative overflow-x-hidden">
-      {/* Animated playful background shapes */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute top-10 left-5 w-24 h-24 rounded-full bg-gradient-to-br from-pink-200 to-yellow-100 opacity-20 animate-float1" />
-        <div className="absolute bottom-16 right-8 w-32 h-32 rounded-full bg-gradient-to-br from-teal-200 to-pink-200 opacity-15 animate-float2" />
-        <div className="absolute top-48 right-20 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 to-indigo-200 opacity-10 animate-float3" />
-        <style>{`
-          @keyframes float1 { 0%{transform:translateY(0);} 50%{transform:translateY(-20px);} 100%{transform:translateY(0);} }
-          @keyframes float2 { 0%{transform:translateY(0);} 50%{transform:translateY(30px);} 100%{transform:translateY(0);} }
-          @keyframes float3 { 0%{transform:translateY(0);} 50%{transform:translateY(-15px);} 100%{transform:translateY(0);} }
-        `}</style>
+    <div className="w-full max-w-md mx-auto overflow-x-hidden">
+      {/* Header with more compact layout */}
+      <div className="flex flex-col items-center pt-2 pb-0">
+        <img
+          src={LOGO_URL}
+          alt="WonderLensAI Logo"
+          style={{ 
+            width: '400px',
+            height: 'auto',
+            objectFit: 'contain',
+            display: 'block',
+            marginBottom: '0',
+          }}
+        />
       </div>
-      <div className="relative z-10 w-full max-w-md mx-auto flex flex-col items-center">
-        {/* WonderLens Daily */}
-        <motion.div variants={cardVariants} className="w-full mb-6 rounded-2xl bg-white/80 shadow-lg p-4">
-          <h2 className="text-lg font-bold mb-2 text-center text-blue-600">✨ WonderLens Daily ✨</h2>
-          <WonderLensDaily country="global" age={8} />
-        </motion.div>
 
-        {/* Main modules grid */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
-          className="grid grid-cols-2 gap-6 mb-10 w-full"
-        >
-          {modules.map((m) => (
-            <CategoryCard
-              key={m.title}
-              icon={m.icon}
-              title={m.title}
-              desc={m.desc}
-              bg={m.bg}
-              onClick={() => navigate(m.route)}
-            />
-          ))}
-        </motion.div>
+      {/* Content Container with tighter spacing */}
+      <div className="w-full px-3">
+        {/* Daily News */}
+        <section className="mb-3">
+          <h2 className="font-bold text-lg mb-2">Daily News</h2>
+          
+          {/* Fixed width scrollable container */}
+          <div className="flex gap-5 overflow-x-auto pb-2 w-full hide-scrollbar" style={{WebkitOverflowScrolling: 'touch'}}>
+            {NEWS_AVATARS.map((avatar, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col items-center cursor-pointer flex-none"
+                onClick={() => setSelectedNews(idx)}
+                style={{ width: '70px', marginRight: '5px' }}
+              >
+                <div
+                  className={`rounded-full bg-gray-200 border-2 overflow-hidden`}
+                  style={{ 
+                    width: '65px', 
+                    height: '65px',
+                    borderColor: selectedNews === idx ? '#5EC6FF' : 'transparent'
+                  }}
+                >
+                  <img
+                    src={avatar.image}
+                    alt={avatar.title}
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                  />
+                </div>
+                <span 
+                  className="mt-1 text-xs font-semibold text-center truncate w-full"
+                  style={{ color: selectedNews === idx ? '#5EC6FF' : '#232B3A' }}
+                >
+                  {avatar.title}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Ask a Question CTA */}
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          className="w-full px-8 py-4 bg-gradient-to-r from-pink-400 via-yellow-300 to-blue-300 text-white text-lg font-extrabold rounded-full shadow-xl hover:scale-105 transition-all duration-150 mb-10 border-4 border-white"
-        >
-          <span role="img" aria-label="question">❓</span> Ask a Question
-        </motion.button>
-
-        {/* Shared Learning */}
-        <motion.div
-          variants={cardVariants}
-          className="w-full bg-white rounded-2xl shadow p-6 text-center mb-4"
-        >
-          <h3 className="text-base font-bold mb-2 text-purple-700">Shared Learning</h3>
-          <p className="text-gray-600 mb-4">See what others are learning!</p>
-          <button
-            className="w-full px-6 py-2 bg-gradient-to-r from-purple-400 to-pink-300 hover:from-purple-500 hover:to-pink-400 text-white font-bold rounded-xl shadow transition-all duration-200"
-            onClick={() => navigate('/shared')}
+        {/* Quiz Section */}
+        <section className="mb-3 mt-1">
+          <h2 className="font-bold text-lg mb-2">Quiz</h2>
+          <div 
+            className="flex overflow-x-auto w-full items-start px-1 hide-scrollbar" 
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              msOverflowStyle: 'none',
+              scrollbarWidth: 'none',
+            }}
           >
-            Explore Shared Learning
-          </button>
-        </motion.div>
+            {/* Ensure absolutely no scrollbar UI is shown */}
+            <style dangerouslySetInnerHTML={{
+              __html: `
+                .hide-scrollbar::-webkit-scrollbar {
+                  display: none;
+                  width: 0;
+                  height: 0;
+                }
+              `
+            }} />
+            
+            {QUIZZES.map((quiz, idx) => (
+              <div
+                key={quiz.label}
+                className="flex-none flex flex-col items-center"
+                style={{
+                  marginRight: '24px',
+                }}
+              >
+                {/* Image container */}
+                <div 
+                  className="flex items-center justify-center cursor-pointer mb-2"
+                  onClick={() => alert(`${quiz.label} coming soon!`)}
+                  style={{
+                    width: '96px', // 80px * 1.2 = 96px
+                    height: '96px',
+                    backgroundColor: idx === 0 ? '#f0f8ff' : idx === 1 ? '#fdf5e6' : '#f5fffa',
+                    border: '2px solid #e0e0e0',
+                    boxShadow: '0 4px 8px rgba(94, 198, 255, 0.12)',
+                    borderRadius: '20px',
+                  }}
+                >
+                  {quiz.image && (
+                    <img
+                      src={quiz.image}
+                      alt={quiz.label}
+                      className="w-full h-full object-cover"
+                      style={{ borderRadius: '18px', width: '96px', height: '96px' }}
+                      loading="eager"
+                    />
+                  )}
+                </div>
+                
+                {/* Text container */}
+                <div className="flex items-center justify-center gap-1 mt-1">
+                  <span style={{ fontSize: '14px', color: '#5EC6FF' }}>{quiz.icon}</span>
+                  <span className="font-semibold text-center text-xs" style={{ color: '#232B3A' }}>
+                    {quiz.label}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Shared Learning Section */}
+        <section className="mb-4">
+          <h2 className="font-bold text-lg mb-2">Shared Learning</h2>
+          <div className="w-full h-[320px] bg-white rounded-lg overflow-hidden flex items-center justify-center shadow-md" style={{
+            boxShadow: '0 4px 12px rgba(94, 198, 255, 0.08)',
+            border: '1px solid #f0f0f0'
+          }}>
+            <SocialGraph />
+          </div>
+        </section>
       </div>
     </div>
   );
 };
 
-export default Home; 
+export default Home;

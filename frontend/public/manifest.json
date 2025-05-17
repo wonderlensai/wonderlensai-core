@@ -3,7 +3,7 @@
   "short_name": "WonderLens",
   "description": "Discover scientific wonders and explore learning through WonderLens",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F7F9FC",
   "theme_color": "#FF6B6B",

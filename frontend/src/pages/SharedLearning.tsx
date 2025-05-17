@@ -1,122 +1,36 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Container,
   Typography,
-  Paper,
-  CircularProgress,
+  Tab,
+  Tabs,
+  Button,
+  CircularProgress
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-
-const ASPECT_RATIO = 5 / 3;
-const NODE_COUNT = 10;
-
-const NetworkContainer = styled(Paper)(() => ({
-  position: 'relative',
-  width: '100%',
-  aspectRatio: ASPECT_RATIO,
-  minHeight: 400,
-  maxWidth: '100vw',
-  margin: '0 auto',
-  borderRadius: 20,
-  overflow: 'hidden',
-  backgroundColor: '#F7F9FC',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-}));
-
-// Default images for each subject
-const subjectImages: Record<string, string> = {
-  History: '/images/history.png',
-  Science: '/images/science.png',
-  Math: '/images/math.png',
-  Geography: '/images/geography.png',
-};
-
-function generateMockNodes(width: number, height: number) {
-  const subjects = ['History', 'Science', 'Math', 'Geography'];
-  const nodes = [];
-  for (let i = 0; i < NODE_COUNT; i++) {
-    const size = Math.random() * 40 + 60;
-    const popularity = Math.random();
-    const subject = subjects[Math.floor(Math.random() * subjects.length)];
-    nodes.push({
-      id: i + 1,
-      x: Math.random() * (width - size) + size / 2,
-      y: Math.random() * (height - size) + size / 2,
-      size,
-      subject,
-      image: subjectImages[subject],
-      popularity,
-      connections: Math.floor(Math.random() * 5) + 1,
-    });
-  }
-  return nodes;
-}
-
-function generateConnections(nodes: any[]) {
-  const connections: any[] = [];
-  nodes.forEach((node, index) => {
-    const closestNodes = nodes
-      .map((otherNode, otherIndex) => ({
-        node: otherNode,
-        distance: Math.sqrt(
-          Math.pow(node.x - otherNode.x, 2) + Math.pow(node.y - otherNode.y, 2)
-        ),
-        index: otherIndex,
-      }))
-      .filter(({ index: idx }) => idx !== index)
-      .sort((a, b) => a.distance - b.distance)
-      .slice(0, node.connections);
-    closestNodes.forEach(({ node: targetNode }) => {
-      connections.push({
-        id: `${node.id}-${targetNode.id}`,
-        source: node,
-        target: targetNode,
-        strength: (node.popularity + targetNode.popularity) / 2,
-      });
-    });
-  });
-  return connections;
-}
+import LearningGraph from '../components/LearningGraph';
+import graphData from '../data/learningGraph.json';
 
 const SharedLearning = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const [nodes, setNodes] = useState<any[]>([]);
-  const [connections, setConnections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [tabValue, setTabValue] = useState(0);
+  const [viewType, setViewType] = useState<'graph' | 'list'>('graph');
 
-  // Use ResizeObserver for reliable size detection
   useEffect(() => {
-    const node = containerRef.current;
-    if (!node) return;
-    const observer = new window.ResizeObserver(entries => {
-      for (let entry of entries) {
-        const { width, height } = entry.contentRect;
-        setContainerSize({ width, height });
-      }
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
+    // Simulate loading data
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Regenerate nodes/connections on size change
-  useEffect(() => {
-    if (containerSize.width > 100 && containerSize.height > 100) {
-      setIsLoading(true);
-      const { width, height } = containerSize;
-      const newNodes = generateMockNodes(width, height);
-      setNodes(newNodes);
-      setConnections(generateConnections(newNodes));
-      setTimeout(() => setIsLoading(false), 500); // Simulate loading
-    }
-  }, [containerSize.width, containerSize.height]);
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
-  const handleNodeClick = useCallback((node: any) => {
-    // Here you would navigate to the specific learning content
-    alert(`Node clicked: ${node.subject}`);
-  }, []);
+  const handleViewToggle = () => {
+    setViewType(viewType === 'graph' ? 'list' : 'graph');
+  };
 
   return (
     <Box
@@ -127,115 +41,91 @@ const SharedLearning = () => {
       }}
     >
       <Container maxWidth="lg">
-        <NetworkContainer ref={containerRef}>
-          {containerSize.width > 100 && containerSize.height > 100 ? (
-            isLoading ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100%',
-                  height: '100%',
-                  minHeight: 300,
-                }}
-              >
-                <CircularProgress size={60} />
-              </Box>
-            ) : (
-              <TransformWrapper
-                initialScale={1}
-                minScale={0.5}
-                maxScale={2.5}
-                wheel={{ step: 0.1 }}
-                doubleClick={{ disabled: true }}
-                panning={{ velocityDisabled: true }}
-              >
-                <TransformComponent>
-                  <svg
-                    width={containerSize.width}
-                    height={containerSize.height}
-                    style={{
-                      display: 'block',
-                      background: 'none',
-                    }}
-                  >
-                    {/* Draw connections */}
-                    {connections.map((connection) => (
-                      <line
-                        key={connection.id}
-                        x1={connection.source.x}
-                        y1={connection.source.y}
-                        x2={connection.target.x}
-                        y2={connection.target.y}
-                        stroke="#9B59B6"
-                        strokeWidth={connection.strength * 3}
-                        strokeDasharray="5,5"
-                        opacity={connection.strength * 0.6}
-                      />
-                    ))}
-                    {/* Draw nodes as SVG groups */}
-                    {nodes.map((node) => (
-                      <g
-                        key={node.id}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleNodeClick(node)}
-                      >
-                        <circle
-                          cx={node.x}
-                          cy={node.y}
-                          r={node.size / 2}
-                          fill={node.subject === 'History' ? '#FF6B6B' : node.subject === 'Science' ? '#4ECDC4' : node.subject === 'Math' ? '#FFD93D' : '#95E1D3'}
-                          stroke="#fff"
-                          strokeWidth={4}
-                          opacity={0.85}
-                        />
-                        <image
-                          href={node.image}
-                          x={node.x - node.size / 2}
-                          y={node.y - node.size / 2}
-                          width={node.size}
-                          height={node.size}
-                          clipPath={`circle(${node.size / 2}px at ${node.x}px ${node.y}px)`}
-                        />
-                        <text
-                          x={node.x}
-                          y={node.y + node.size / 2 + 18}
-                          textAnchor="middle"
-                          fontSize="14"
-                          fill="#333"
-                          fontWeight="bold"
-                          style={{ pointerEvents: 'none', userSelect: 'none' }}
-                        >
-                          {node.subject}
-                        </text>
-                      </g>
-                    ))}
-                  </svg>
-                </TransformComponent>
-              </TransformWrapper>
-            )
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                height: '100%',
-                minHeight: 300,
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
+            Learning Network
+          </Typography>
+          <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 3 }}>
+            Explore what others are learning and discover new connections!
+          </Typography>
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Tabs 
+              value={tabValue} 
+              onChange={handleTabChange}
+              sx={{ 
+                '& .MuiTab-root': { 
+                  fontWeight: 600,
+                  borderRadius: '12px 12px 0 0',
+                  minWidth: 100
+                }
               }}
             >
-              <CircularProgress size={60} />
-            </Box>
-          )}
-        </NetworkContainer>
+              <Tab label="All Topics" />
+              <Tab label="History" />
+              <Tab label="Science" />
+              <Tab label="Math" />
+              <Tab label="Geography" />
+            </Tabs>
+            
+            <Button 
+              variant="outlined" 
+              onClick={handleViewToggle}
+              sx={{ borderRadius: 20, textTransform: 'none' }}
+            >
+              {viewType === 'graph' ? 'Show as List' : 'Show as Graph'}
+            </Button>
+          </Box>
+        </Box>
+
+        {isLoading ? (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: 500,
+            }}
+          >
+            <CircularProgress size={60} />
+          </Box>
+        ) : (
+          <Box sx={{ 
+            height: { xs: 400, sm: 500, md: 600 },
+            width: '100%',
+            position: 'relative' 
+          }}>
+            {viewType === 'graph' ? (
+              <LearningGraph 
+                data={graphData} 
+                height={window.innerHeight * 0.6} 
+                width={window.innerWidth > 1200 ? 1200 : window.innerWidth * 0.9}
+              />
+            ) : (
+              <Box sx={{ 
+                p: 3, 
+                bgcolor: 'white', 
+                borderRadius: 4, 
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)' 
+              }}>
+                <Typography variant="h6" gutterBottom>
+                  Popular Learning Topics
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  This feature will show a list view of learning topics and connected users.
+                </Typography>
+                {/* To be implemented */}
+              </Box>
+            )}
+          </Box>
+        )}
+
         <Typography
           variant="body1"
           align="center"
           sx={{ mt: 3, color: 'text.secondary' }}
         >
-          Explore what others are learning! Zoom, pan, and click on any image to see more details.
+          Zoom, pan, and click on any node to explore connections between topics and users.
         </Typography>
       </Container>
     </Box>

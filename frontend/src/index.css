@@ -11,6 +11,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Add support for iOS safe areas */
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
 }
 
 a {
@@ -66,4 +72,47 @@ button:focus-visible {
 html, body, #root {
   height: 100%;
   min-height: 100vh;
+}
+
+body {
+  font-family: 'Baloo 2', 'Nunito', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+  background: #ffffff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: background 0.5s;
+}
+
+/* Animated background shapes for delight */
+.animated-bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  filter: blur(2px);
+  animation: floaty 8s ease-in-out infinite alternate;
+}
+@keyframes floaty {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-30px) scale(1.08); }
+}
+
+/* iOS PWA fixes */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  body {
+    /* Ensure body takes safe areas into account */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Fix for position: fixed elements on iOS */
+  .fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+  
+  .fixed.bottom-0 {
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

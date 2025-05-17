@@ -1,16 +1,19 @@
 import React from 'react';
 
-const WonderlandMascot = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <circle cx="32" cy="32" r="30" fill="#FFD93D" stroke="#6C63FF" strokeWidth="4" />
-    <ellipse cx="32" cy="40" rx="16" ry="10" fill="#FFF" opacity="0.7" />
-    <ellipse cx="24" cy="28" rx="4" ry="6" fill="#6C63FF" />
-    <ellipse cx="40" cy="28" rx="4" ry="6" fill="#6C63FF" />
-    <ellipse cx="24" cy="30" rx="1.2" ry="2" fill="#fff" />
-    <ellipse cx="40" cy="30" rx="1.2" ry="2" fill="#fff" />
-    <path d="M26 44 Q32 50 38 44" stroke="#6C63FF" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-    <ellipse cx="32" cy="18" rx="6" ry="2.5" fill="#FFD93D" stroke="#6C63FF" strokeWidth="1.5" />
-  </svg>
-);
-
-export default WonderlandMascot; 
+export default function WonderlandMascot({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="56" fill="#ffe066" stroke="#ffb4a2" strokeWidth="8" />
+      <ellipse cx="60" cy="70" rx="32" ry="28" fill="#fff" />
+      <ellipse cx="45" cy="65" rx="6" ry="8" fill="#444" />
+      <ellipse cx="75" cy="65" rx="6" ry="8" fill="#444" />
+      <ellipse cx="60" cy="85" rx="12" ry="6" fill="#ffb4a2" />
+      <ellipse cx="60" cy="90" rx="6" ry="2" fill="#fff" />
+      <ellipse cx="60" cy="40" rx="18" ry="10" fill="#fff" />
+      <ellipse cx="60" cy="38" rx="8" ry="4" fill="#ffe066" />
+      <ellipse cx="60" cy="38" rx="3" ry="1.5" fill="#fff" />
+      <ellipse cx="40" cy="38" rx="2" ry="1" fill="#fff" />
+      <ellipse cx="80" cy="38" rx="2" ry="1" fill="#fff" />
+    </svg>
+  );
+} 
