@@ -18,18 +18,18 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 // POST /api/analyze-image
 router.post('/', async (req, res) => {
   const { image, child_age, child_country, device_info, user_id } = req.body;
-  
-  // Log image size information
-  const imageSizeKB = Math.round(image.length / 1024);
-  console.log('[Image] Size received from frontend:', imageSizeKB, 'KB');
-  console.log('[Image] Raw data length:', image.length, 'bytes');
-  console.log('[Image] Base64 prefix:', image.substring(0, 30) + '...'); // Log the start of the base64 string to verify it's compressed
-  
+
   console.log('[OpenAI] Incoming request:', { hasImage: !!image, child_age, child_country, device_info, user_id });
   if (!image) {
     console.log('[OpenAI] Error: No image provided');
     return res.status(400).json({ error: 'No image provided' });
   }
+
+  // Log image size information
+  const imageSizeKB = Math.round(image.length / 1024);
+  console.log('[Image] Size received from frontend:', imageSizeKB, 'KB');
+  console.log('[Image] Raw data length:', image.length, 'bytes');
+  console.log('[Image] Base64 prefix:', image.substring(0, 30) + '...'); // Log the start of the base64 string to verify it's compressed
   try {
     // 1. Upload image to Supabase Storage
     let imageUrl = null;
