@@ -132,7 +132,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
       style={{ 
         minHeight: '100vh', 
         paddingBottom: '60px',
-        paddingTop: 'env(safe-area-inset-top)' // Add padding for notch/camera
+        paddingTop: 'max(10px, calc(env(safe-area-inset-top) - 10px))' // Reduced padding for notch/camera
       }}
     >
       {/* Main content - with proper top and bottom padding */}
