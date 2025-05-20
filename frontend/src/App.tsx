@@ -16,56 +16,56 @@ import { useState, useEffect } from 'react';
 import { FaHome, FaCamera, FaGraduationCap, FaShareAlt } from 'react-icons/fa';
 import BottomNav from './components/BottomNav';
 
-// Updated kid-friendly theme with new color palette
+// Updated kid-friendly theme with modern color palette
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#5EC6FF', // Sky Blue (Main accent)
-      light: '#8DD5FF',
-      dark: '#4BAAD8',
+      main: '#5E7BFF', // Vibrant blue (main accent)
+      light: '#738FFF',
+      dark: '#4A62CC',
     },
     secondary: {
-      main: '#FF757D', // Bright Coral (Contrast, call-to-action)
-      light: '#FF9CA2',
-      dark: '#E15E65',
+      main: '#FF7285', // Warm coral (contrast color)
+      light: '#FF9EAA',
+      dark: '#E25C6D',
     },
     background: {
-      default: '#F8FBFF', // Very Pale Blue (Main background)
-      paper: '#FFFFFF', // White (Clean sections, cards)
+      default: '#F8FAFF', // Soft blue background
+      paper: '#FFFFFF', // Clean white for cards
     },
     success: {
-      main: '#6BEE90', // Fresh Green (Friendly, positive)
+      main: '#6BE4A3', // Fresh mint green
     },
     warning: {
-      main: '#FFE26A', // Vivid Yellow (Energy & highlights)
+      main: '#FFDB63', // Bright yellow
     },
     error: {
-      main: '#FF757D', // Bright Coral
+      main: '#FF6B6B', // Gentle red
     },
     info: {
-      main: '#AD98FF', // Lavender/Purple (Imagination/curiosity)
+      main: '#6FDFDF', // Turquoise
     },
     text: {
-      primary: '#232B3A', // Charcoal (Headings/text)
-      secondary: '#7A869A', // Slate Gray (Secondary text)
+      primary: '#2D3748', // Deep blue-gray
+      secondary: '#718096', // Medium gray
     },
   },
   typography: {
-    fontFamily: '"Baloo 2", "Comic Sans MS", "Comic Sans", cursive',
+    fontFamily: '"Nunito", "Baloo 2", system-ui, sans-serif',
     h1: {
       fontSize: '2.5rem',
-      fontWeight: 700,
-      color: '#232B3A', // Charcoal
+      fontWeight: 800,
+      color: '#2D3748',
     },
     h2: {
       fontSize: '2rem',
-      fontWeight: 600,
-      color: '#232B3A', // Charcoal
+      fontWeight: 700,
+      color: '#2D3748',
     },
     h3: {
       fontSize: '1.75rem',
-      fontWeight: 600,
-      color: '#232B3A', // Charcoal
+      fontWeight: 700,
+      color: '#2D3748',
     },
   },
   components: {
@@ -76,28 +76,31 @@ const theme = createTheme({
           textTransform: 'none',
           fontSize: '1.1rem',
           padding: '10px 20px',
+          fontWeight: 600,
         },
         containedPrimary: {
-          background: 'linear-gradient(135deg, #5EC6FF 0%, #AD98FF 100%)', // Gradient 1
+          background: 'linear-gradient(135deg, #5E7BFF 0%, #6FDFDF 100%)', // Gradient blue to turquoise
+          boxShadow: '0 4px 10px rgba(94, 123, 255, 0.15)',
         },
         containedSecondary: {
-          background: 'linear-gradient(135deg, #FF757D 0%, #FFE26A 100%)', // Gradient 2
+          background: 'linear-gradient(135deg, #FF7285 0%, #FFDB63 100%)', // Gradient coral to yellow
+          boxShadow: '0 4px 10px rgba(255, 114, 133, 0.15)',
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 20,
-          boxShadow: '0 4px 20px rgba(94, 198, 255, 0.12)', // Soft Shadow
-          backgroundColor: '#FFFBE9', // Pale Yellow for card backgrounds
+          borderRadius: 16,
+          boxShadow: '0 4px 20px rgba(94, 123, 255, 0.08)', // Soft shadow
+          backgroundColor: '#FFFFFF',
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: '#FFFFFF', // White
+          backgroundColor: '#FFFFFF',
         },
       },
     },
@@ -128,20 +131,41 @@ function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div 
-      className="flex flex-col bg-white relative font-sans overflow-x-hidden"
+      className="flex flex-col font-sans overflow-x-hidden"
       style={{ 
         minHeight: '100vh', 
-        paddingBottom: '60px',
-        paddingTop: 'max(10px, calc(env(safe-area-inset-top) - 10px))' // Reduced padding for notch/camera
+        paddingBottom: '65px', // Match the navigation height
+        backgroundColor: 'var(--color-background)',
+        fontFamily: 'var(--font-family)',
       }}
     >
-      {/* Main content - with proper top and bottom padding */}
-      <main className="relative z-10 flex-1 px-2 sm:px-0" style={{ 
-        paddingBottom: 'calc(60px + env(safe-area-inset-bottom))'
+      {/* App background decoration */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="animated-bg-shape" style={{
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(94, 123, 255, 0.15) 0%, rgba(94, 123, 255, 0) 70%)',
+          top: '-100px',
+          right: '-100px',
+        }} />
+        <div className="animated-bg-shape" style={{
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(111, 223, 223, 0.15) 0%, rgba(111, 223, 223, 0) 70%)',
+          bottom: '20%',
+          left: '-100px',
+          animationDelay: '0.5s',
+        }} />
+      </div>
+      
+      {/* App content with safe area inset padding */}
+      <div className="app-container pt-4" style={{ 
+        paddingTop: 'calc(env(safe-area-inset-top) + 4px)'
       }}>
         {children}
-      </main>
-      {/* Colorful Bottom Navigation */}
+      </div>
+      
+      {/* Bottom Navigation */}
       <BottomNav />
     </div>
   );

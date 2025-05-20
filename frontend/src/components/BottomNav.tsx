@@ -54,73 +54,71 @@ export default function BottomNav() {
     <div 
       className="fixed bottom-0 left-0 right-0 z-[999]" 
       style={{
-        paddingBottom: 'env(safe-area-inset-bottom)',
-        // Create a safe area around the bottom navigation
-        marginBottom: '0', // Ensure no margin pushes it up
-        width: '100%', // Make sure it spans full width
-        backgroundColor: '#FFFFFF', // Add background color to the entire bottom area
-        boxShadow: '0 -4px 20px rgba(94, 198, 255, 0.12)',
+        width: '100%',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)',
+        borderTop: 'none',
+        boxShadow: '0 -3px 10px rgba(0, 0, 0, 0.05)',
       }}
     >
-      <div 
-        className="mx-auto overflow-hidden border-t border-gray-300" 
-        style={{ 
-          backgroundColor: '#FFFFFF',
-          maxWidth: '600px', // Match your app's max width
-        }}
-      >
+      {/* Full width navigation bar - no borders */}
+      <div className="max-w-md mx-auto">
         <div className="grid grid-cols-4">
           {navItems.map((item, index) => {
             const isActive = location.pathname === item.path;
             return (
               <button
                 key={item.label}
-                className={`flex flex-col items-center justify-center py-3 relative`}
+                className="flex flex-col items-center justify-center py-2 relative"
                 style={{
-                  backgroundColor: isActive ? '#F8FBFF' : 'white',
-                  borderRight: index !== navItems.length - 1 ? '1px solid #e5e7eb' : 'none',
-                  transition: 'all 0.2s ease',
-                  height: '60px', // Fixed height for consistency
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  transition: 'all var(--transition-normal)',
+                  height: '65px',
                 }}
                 onClick={() => handleNavClick(item.path)}
               >
-                <div style={{
-                  color: isActive ? '#5EC6FF' : '#7A869A',
-                }}>
+                <div 
+                  style={{
+                    color: isActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                    transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                    transition: 'all var(--transition-normal)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '3px',
+                  }}
+                >
                   {item.icon}
                 </div>
                 <span 
-                  className="text-xs font-bold mt-1"
+                  className="text-xs font-bold"
                   style={{ 
-                    fontFamily: 'Baloo 2, Nunito, cursive',
-                    color: isActive ? '#5EC6FF' : '#7A869A'
+                    fontFamily: 'var(--font-family)',
+                    color: isActive ? 'var(--color-primary)' : 'var(--color-text-tertiary)',
+                    transition: 'all var(--transition-normal)',
+                    opacity: isActive ? 1 : 0.7,
                   }}
                 >
                   {item.label}
                 </span>
-                {isActive && (
-                  <div 
-                    className="absolute top-0 left-0 right-0 h-1 rounded-b-md" 
-                    style={{ 
-                      background: 'linear-gradient(90deg, #5EC6FF 0%, #AD98FF 100%)'
-                    }}
-                  />
-                )}
               </button>
             );
           })}
         </div>
       </div>
-      {/* Safe area extension with matching background color */}
+      
+      {/* Safe area extension */}
       <div 
         style={{
-          backgroundColor: '#FFFFFF',
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
           height: 'env(safe-area-inset-bottom)',
-          zIndex: -1
+          width: '100%',
+          position: 'absolute',
+          bottom: '-env(safe-area-inset-bottom)',
+          left: 0,
+          right: 0
         }}
       />
     </div>

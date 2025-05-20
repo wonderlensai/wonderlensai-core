@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { FaRocket, FaPalette, FaTree } from "react-icons/fa";
 import SocialGraph from "../components/SocialGraph";
+import Section from "../components/Section";
+import PageContainer from "../components/PageContainer";
 // import WonderLensDaily from "../components/WonderLensDaily"; // Uncomment if using this component
 
-// --- Image URLs with image transformation parameters ---
-// Increasing width to 400px for the logo
-const LOGO_URL = "https://zgbkpnceymplssmpxgsi.supabase.co/storage/v1/object/public/assets//Header_log.png?width=300&quality=90";
+// Updated logo with better quality
+const LOGO_URL = "https://zgbkpnceymplssmpxgsi.supabase.co/storage/v1/object/public/assets//Header_log.png?width=300&quality=100";
 
 const NEWS_AVATARS = [
   {
@@ -39,16 +40,22 @@ const QUIZZES = [
     label: "Space Quiz",
     icon: <FaRocket size={16} />,
     image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=120&h=120&auto=format&fit=crop",
+    color: "#E9F2FF",
+    iconColor: "#5E7BFF",
   },
   {
     label: "Art Quiz",
     icon: <FaPalette size={16} />,
     image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=120&h=120&auto=format&fit=crop",
+    color: "#FFE9EC",
+    iconColor: "#FF7285",
   },
   {
     label: "Nature Quiz",
     icon: <FaTree size={16} />,
     image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=120&h=120&auto=format&fit=crop",
+    color: "#E6F9F1",
+    iconColor: "#6BE4A3",
   },
 ];
 
@@ -59,43 +66,55 @@ const Home: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState(0);
 
   return (
-    <div className="w-full max-w-md mx-auto overflow-x-hidden">
-      {/* Header with minimal spacing for iPhone camera notch */}
-      <div className="flex flex-col items-center pb-0">
-        <img
-          src={LOGO_URL}
-          alt="WonderLensAI Logo"
-          style={{ 
-            width: '400px',
-            height: 'auto',
-            objectFit: 'contain',
-            display: 'block',
-            marginBottom: '0'
-          }}
-        />
+    <div className="space-y-5">
+      {/* Integrated app header with logo */}
+      <div className="app-header -mx-4 sm:-mx-6 px-4 sm:px-6 pt-5 pb-8 -mt-4 relative">
+        {/* Background decorative elements */}
+        <div className="absolute top-8 left-5 w-24 h-24 rounded-full opacity-10" style={{
+          background: 'radial-gradient(circle, var(--color-primary-light), transparent 70%)',
+        }}></div>
+        <div className="absolute top-12 right-6 w-20 h-20 rounded-full opacity-10" style={{
+          background: 'radial-gradient(circle, var(--color-secondary), transparent 70%)',
+        }}></div>
+        <div className="absolute bottom-4 left-1/4 w-16 h-16 rounded-full opacity-10" style={{
+          background: 'radial-gradient(circle, var(--color-accent), transparent 70%)',
+        }}></div>
+        
+        {/* Logo centered */}
+        <div className="flex justify-center items-center relative">
+          <img
+            src={LOGO_URL}
+            alt="WonderLensAI Logo"
+            style={{ 
+              width: '270px',
+              height: 'auto',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 3px 6px rgba(94, 123, 255, 0.25))',
+            }}
+          />
+        </div>
       </div>
 
-      {/* Content Container with tighter spacing */}
-      <div className="w-full px-3">
-        {/* Daily News */}
-        <section className="mb-3">
-          <h2 className="font-bold text-lg mb-2">Daily News</h2>
-          
-          {/* Fixed width scrollable container */}
-          <div className="flex gap-5 overflow-x-auto pb-2 w-full hide-scrollbar" style={{WebkitOverflowScrolling: 'touch'}}>
+      {/* Content sections with borders */}
+      <div className="bg-white rounded-2xl p-5 kid-card shadow-md">
+        {/* Daily News Section */}
+        <Section title="Daily News">
+          <div className="flex gap-4 overflow-x-auto pb-3 w-full hide-scrollbar px-1" style={{WebkitOverflowScrolling: 'touch'}}>
             {NEWS_AVATARS.map((avatar, idx) => (
               <div
                 key={idx}
                 className="flex flex-col items-center cursor-pointer flex-none"
                 onClick={() => setSelectedNews(idx)}
-                style={{ width: '70px', marginRight: '5px' }}
+                style={{ width: '72px' }}
               >
                 <div
-                  className={`rounded-full bg-gray-200 border-2 overflow-hidden`}
+                  className={`rounded-full overflow-hidden transition-all duration-300`}
                   style={{ 
-                    width: '65px', 
-                    height: '65px',
-                    borderColor: selectedNews === idx ? '#5EC6FF' : 'transparent'
+                    width: '68px', 
+                    height: '68px',
+                    border: `3px solid ${selectedNews === idx ? 'var(--color-primary)' : 'transparent'}`,
+                    transform: selectedNews === idx ? 'scale(1.05)' : 'scale(1)',
+                    boxShadow: selectedNews === idx ? 'var(--shadow-md)' : 'var(--shadow-sm)',
                   }}
                 >
                   <img
@@ -106,92 +125,92 @@ const Home: React.FC = () => {
                   />
                 </div>
                 <span 
-                  className="mt-1 text-xs font-semibold text-center truncate w-full"
-                  style={{ color: selectedNews === idx ? '#5EC6FF' : '#232B3A' }}
+                  className="mt-2 text-xs font-bold text-center truncate w-full"
+                  style={{ 
+                    color: selectedNews === idx ? 'var(--color-primary)' : 'var(--color-text-primary)',
+                    opacity: selectedNews === idx ? 1 : 0.7,
+                    transition: 'all var(--transition-normal)',
+                  }}
                 >
                   {avatar.title}
                 </span>
               </div>
             ))}
           </div>
-        </section>
+        </Section>
+      </div>
 
-        {/* Quiz Section */}
-        <section className="mb-3 mt-1">
-          <h2 className="font-bold text-lg mb-2">Quiz</h2>
+      {/* Quiz Section */}
+      <div className="bg-white rounded-2xl p-5 kid-card shadow-md">
+        <Section title="Quiz">
           <div 
-            className="flex overflow-x-auto w-full items-start px-1 hide-scrollbar" 
+            className="flex overflow-x-auto w-full items-start hide-scrollbar px-1" 
             style={{
               WebkitOverflowScrolling: 'touch',
-              msOverflowStyle: 'none',
-              scrollbarWidth: 'none',
             }}
           >
-            {/* Ensure absolutely no scrollbar UI is shown */}
-            <style dangerouslySetInnerHTML={{
-              __html: `
-                .hide-scrollbar::-webkit-scrollbar {
-                  display: none;
-                  width: 0;
-                  height: 0;
-                }
-              `
-            }} />
-            
             {QUIZZES.map((quiz, idx) => (
               <div
                 key={quiz.label}
                 className="flex-none flex flex-col items-center"
                 style={{
-                  marginRight: '24px',
+                  marginRight: '20px',
+                  width: '104px',
                 }}
               >
                 {/* Image container */}
                 <div 
-                  className="flex items-center justify-center cursor-pointer mb-2"
+                  className="flex items-center justify-center cursor-pointer mb-3 relative overflow-hidden transition-all duration-300"
                   onClick={() => alert(`${quiz.label} coming soon!`)}
                   style={{
-                    width: '96px', // 80px * 1.2 = 96px
-                    height: '96px',
-                    backgroundColor: idx === 0 ? '#f0f8ff' : idx === 1 ? '#fdf5e6' : '#f5fffa',
-                    border: '2px solid #e0e0e0',
-                    boxShadow: '0 4px 8px rgba(94, 198, 255, 0.12)',
-                    borderRadius: '20px',
+                    width: '100px',
+                    height: '100px',
+                    backgroundColor: quiz.color,
+                    border: 'none',
+                    boxShadow: 'var(--shadow-md)',
+                    borderRadius: 'var(--radius-lg)',
                   }}
                 >
+                  {/* Gradient overlay for images */}
+                  <div className="absolute inset-0 opacity-20" style={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%)',
+                  }} />
+                  
                   {quiz.image && (
                     <img
                       src={quiz.image}
                       alt={quiz.label}
                       className="w-full h-full object-cover"
-                      style={{ borderRadius: '18px', width: '96px', height: '96px' }}
+                      style={{ borderRadius: 'var(--radius-lg)' }}
                       loading="eager"
                     />
                   )}
                 </div>
                 
                 {/* Text container */}
-                <div className="flex items-center justify-center gap-1 mt-1">
-                  <span style={{ fontSize: '14px', color: '#5EC6FF' }}>{quiz.icon}</span>
-                  <span className="font-semibold text-center text-xs" style={{ color: '#232B3A' }}>
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <span style={{ fontSize: '15px', color: quiz.iconColor }}>{quiz.icon}</span>
+                  <span className="font-bold text-center text-xs" style={{ color: 'var(--color-text-primary)' }}>
                     {quiz.label}
                   </span>
                 </div>
               </div>
             ))}
           </div>
-        </section>
+        </Section>
+      </div>
 
-        {/* Shared Learning Section */}
-        <section className="mb-4">
-          <h2 className="font-bold text-lg mb-2">Shared Learning</h2>
-          <div className="w-full h-[320px] bg-white rounded-lg overflow-hidden flex items-center justify-center shadow-md" style={{
-            boxShadow: '0 4px 12px rgba(94, 198, 255, 0.08)',
-            border: '1px solid #f0f0f0'
+      {/* Shared Learning Section */}
+      <div className="bg-white rounded-2xl p-5 kid-card shadow-md">
+        <Section title="Shared Learning">
+          <div className="w-full h-[320px] rounded-xl overflow-hidden flex items-center justify-center" style={{
+            boxShadow: 'var(--shadow-md)',
+            border: '1px solid rgba(94, 123, 255, 0.1)',
+            background: '#010D24', // Dark background for graph contrast
           }}>
             <SocialGraph />
           </div>
-        </section>
+        </Section>
       </div>
     </div>
   );

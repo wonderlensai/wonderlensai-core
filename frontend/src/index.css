@@ -1,72 +1,70 @@
+/* Import rounded, playful fonts for kid-friendly UI */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Remove default backgrounds and body styles that conflict with Tailwind */
+/* Modern design system variables */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Color palette - vibrant but gentle */
+  --color-primary: #5E7BFF;
+  --color-primary-light: #738FFF;
+  --color-primary-dark: #4A62CC;
+  --color-secondary: #FF7285;
+  --color-accent: #6FDFDF;
+  --color-background: #F8FAFF;
+  --color-card: #FFFFFF;
+  --color-text-primary: #2D3748;
+  --color-text-secondary: #718096;
+  --color-text-tertiary: #A0AEC0;
+  --color-success: #6BE4A3;
+  --color-warning: #FFDB63;
+  --color-error: #FF6B6B;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Rounded corners */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  /* Animations */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+  
+  /* Typography */
+  --font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   
   /* Add support for iOS safe areas */
   --sat: env(safe-area-inset-top);
   --sar: env(safe-area-inset-right);
   --sab: env(safe-area-inset-bottom);
   --sal: env(safe-area-inset-left);
+  
+  font-family: var(--font-family);
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-/* Removed global h1 and button styles to allow Tailwind to style these elements */
-
-/*
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-*/
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  /* button {
-    background-color: #f9f9f9;
-  } */
+/* Base styles */
+body {
+  font-family: var(--font-family);
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: background 0.5s;
 }
 
 html, body, #root {
@@ -74,13 +72,61 @@ html, body, #root {
   min-height: 100vh;
 }
 
-body {
-  font-family: 'Baloo 2', 'Nunito', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
-  background: #ffffff;
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-  transition: background 0.5s;
+a {
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: inherit;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+/* Kid-friendly card styling */
+.kid-card {
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  overflow: hidden;
+}
+
+.kid-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Modern section headings */
+.section-heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* Button styling */
+.kid-button {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.kid-button:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 /* Animated background shapes for delight */
@@ -91,9 +137,15 @@ body {
   filter: blur(2px);
   animation: floaty 8s ease-in-out infinite alternate;
 }
+
 @keyframes floaty {
   0% { transform: translateY(0) scale(1); }
   100% { transform: translateY(-30px) scale(1.08); }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 /* iOS PWA fixes */
@@ -123,4 +175,40 @@ body {
     top: 0;
     padding-top: env(safe-area-inset-top);
   }
+}
+
+/* Custom utility classes for app spacing */
+.app-container {
+  padding-left: 16px;
+  padding-right: 16px;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-side-margin {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.app-header {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(246,249,255,1) 100%);
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+  z-index: 1;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
