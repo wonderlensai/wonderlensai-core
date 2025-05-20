@@ -129,9 +129,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div 
       className="flex flex-col bg-white relative font-sans overflow-x-hidden"
-      style={{ minHeight: '100vh', paddingBottom: '60px' }} // Add fixed padding for bottom nav
+      style={{ 
+        minHeight: '100vh', 
+        paddingBottom: '60px',
+        paddingTop: 'env(safe-area-inset-top)' // Add padding for notch/camera
+      }}
     >
-      {/* Main content - with proper bottom padding */}
+      {/* Main content - with proper top and bottom padding */}
       <main className="relative z-10 flex-1 px-2 sm:px-0" style={{ 
         paddingBottom: 'calc(60px + env(safe-area-inset-bottom))'
       }}>

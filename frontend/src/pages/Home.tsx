@@ -60,8 +60,10 @@ const Home: React.FC = () => {
 
   return (
     <div className="w-full max-w-md mx-auto overflow-x-hidden">
-      {/* Header with more compact layout */}
-      <div className="flex flex-col items-center pt-2 pb-0">
+      {/* Header with proper spacing for iPhone camera notch */}
+      <div className="flex flex-col items-center pb-0" style={{
+        paddingTop: 'max(16px, env(safe-area-inset-top))'
+      }}>
         <img
           src={LOGO_URL}
           alt="WonderLensAI Logo"
@@ -71,6 +73,7 @@ const Home: React.FC = () => {
             objectFit: 'contain',
             display: 'block',
             marginBottom: '0',
+            marginTop: '10px'
           }}
         />
       </div>

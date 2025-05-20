@@ -97,10 +97,13 @@ body {
 }
 
 /* iOS PWA fixes */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
+@supports (padding: env(safe-area-inset-top)) {
   body {
     /* Ensure body takes safe areas into account */
+    padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   
   /* Fix for position: fixed elements on iOS */
@@ -114,5 +117,10 @@ body {
   .fixed.bottom-0 {
     bottom: 0;
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .fixed.top-0 {
+    top: 0;
+    padding-top: env(safe-area-inset-top);
   }
 }

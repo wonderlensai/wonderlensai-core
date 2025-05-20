@@ -42,10 +42,10 @@ const CameraButton = styled(IconButton)(() => ({
   transform: 'translateX(-50%)',
   width: 72,
   height: 72,
-  backgroundColor: 'rgba(255, 107, 107, 0.9)', // fallback to a close color
+  backgroundColor: '#5EC6FF', // Main accent color
   backdropFilter: 'blur(8px)',
   '&:hover': {
-    backgroundColor: '#FF6B6B',
+    background: 'linear-gradient(135deg, #5EC6FF 0%, #AD98FF 100%)',
     transform: 'translateX(-50%) scale(1.05)',
   },
   '& .MuiSvgIcon-root': {
@@ -381,7 +381,7 @@ const Scan = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #F7F9FC 0%, #E8F0FE 100%)',
+        background: '#F8FBFF',
         py: 4,
         display: 'flex',
         flexDirection: 'column',
@@ -398,11 +398,20 @@ const Scan = () => {
             '& .MuiTabs-indicator': {
               height: 3,
               borderRadius: 3,
+              backgroundColor: tab === 0 ? '#5EC6FF' : '#AD98FF',
             },
           }}
         >
-          <StyledTab icon={<CameraAltIcon />} label="Camera" />
-          <StyledTab icon={<UploadFileIcon />} label="Upload" />
+          <StyledTab 
+            icon={<CameraAltIcon sx={{ color: tab === 0 ? '#5EC6FF' : '#7A869A' }} />} 
+            label="Camera" 
+            sx={{ color: tab === 0 ? '#5EC6FF' : '#7A869A', fontWeight: tab === 0 ? 700 : 500 }} 
+          />
+          <StyledTab 
+            icon={<UploadFileIcon sx={{ color: tab === 1 ? '#AD98FF' : '#7A869A' }} />} 
+            label="Upload" 
+            sx={{ color: tab === 1 ? '#AD98FF' : '#7A869A', fontWeight: tab === 1 ? 700 : 500 }} 
+          />
         </Tabs>
 
         <AnimatePresence mode="wait">
@@ -414,15 +423,15 @@ const Scan = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <CameraContainer>
+              <CameraContainer sx={{ backgroundColor: '#FFFFFF' }}>
                 {capturedImage ? (
                   <>
-                    <PreviewImage src={capturedImage} alt="Preview" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.25)', border: '4px solid #fff', marginTop: 24 }} />
+                    <PreviewImage src={capturedImage} alt="Preview" style={{ boxShadow: '0 4px 24px rgba(94,198,255,0.12)', border: '4px solid #fff', marginTop: 24 }} />
                     <Box sx={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 2, display: 'flex', gap: 2 }}>
-                      <Button variant="outlined" color="secondary" onClick={() => { setCapturedImage(null); startCamera(); }} sx={{ borderRadius: 8, fontWeight: 600, px: 4, py: 1 }}>
+                      <Button variant="outlined" onClick={() => { setCapturedImage(null); startCamera(); }} sx={{ borderRadius: 8, fontWeight: 600, px: 4, py: 1, color: '#5EC6FF', borderColor: '#5EC6FF', '&:hover': { borderColor: '#AD98FF', color: '#AD98FF' } }}>
                         Retake
                       </Button>
-                      <Button variant="contained" color="primary" onClick={handleAnalyze} sx={{ borderRadius: 8, fontWeight: 600, px: 4, py: 1 }} disabled={isLoading}>
+                      <Button variant="contained" onClick={handleAnalyze} sx={{ borderRadius: 8, fontWeight: 600, px: 4, py: 1, background: 'linear-gradient(135deg, #5EC6FF 0%, #AD98FF 100%)', color: '#fff', boxShadow: '0 4px 20px rgba(94,198,255,0.12)', '&:hover': { background: 'linear-gradient(135deg, #AD98FF 0%, #5EC6FF 100%)' } }} disabled={isLoading}>
                         {isLoading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Analyze'}
                       </Button>
                     </Box>
@@ -474,7 +483,7 @@ const Scan = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <UploadContainer>
+              <UploadContainer sx={{ backgroundColor: '#FFFFFF' }}>
                 {uploadedImage ? (
                   <PreviewImage src={uploadedImage} alt="Uploaded Preview" />
                 ) : (
@@ -486,11 +495,11 @@ const Scan = () => {
                       fontSize: '1.1rem',
                       borderRadius: 3,
                       padding: '12px 24px',
-                      backgroundColor: 'rgba(255,255,255,0.9)',
-                      backdropFilter: 'blur(8px)',
-                      color: 'primary.main',
+                      background: 'linear-gradient(135deg, #5EC6FF 0%, #AD98FF 100%)',
+                      color: '#fff',
+                      boxShadow: '0 4px 20px rgba(94,198,255,0.12)',
                       '&:hover': {
-                        backgroundColor: 'rgba(255,255,255,1)',
+                        background: 'linear-gradient(135deg, #AD98FF 0%, #5EC6FF 100%)',
                       },
                     }}
                   >
