@@ -58,13 +58,14 @@ export default function BottomNav() {
         // Create a safe area around the bottom navigation
         marginBottom: '0', // Ensure no margin pushes it up
         width: '100%', // Make sure it spans full width
+        backgroundColor: '#FFFFFF', // Add background color to the entire bottom area
+        boxShadow: '0 -4px 20px rgba(94, 198, 255, 0.12)',
       }}
     >
       <div 
-        className="mx-auto overflow-hidden border-t border-gray-300 shadow-lg" 
+        className="mx-auto overflow-hidden border-t border-gray-300" 
         style={{ 
           backgroundColor: '#FFFFFF',
-          boxShadow: '0 -4px 20px rgba(94, 198, 255, 0.12)', 
           maxWidth: '600px', // Match your app's max width
         }}
       >
@@ -110,6 +111,18 @@ export default function BottomNav() {
           })}
         </div>
       </div>
+      {/* Safe area extension with matching background color */}
+      <div 
+        style={{
+          backgroundColor: '#FFFFFF',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 'env(safe-area-inset-bottom)',
+          zIndex: -1
+        }}
+      />
     </div>
   );
 } 
