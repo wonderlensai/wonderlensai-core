@@ -22,12 +22,25 @@ const isDevelopment = () => {
 
 // Get the correct API endpoint based on environment
 const getApiUrl = (endpoint: string) => {
+  // Log the current environment for debugging
+  console.log('🔍 getApiUrl called with endpoint:', endpoint);
+  console.log('🔍 Current API_BASE_URL:', API_BASE_URL);
+  
   // In development without explicit VITE_API_URL, use localhost
   if (isDevelopment() && !import.meta.env.VITE_API_URL) {
     const url = `http://localhost:7001${endpoint}`;
     console.log('🔍 Using development URL:', url);
     return url;
   }
+  
+  // For production environment or when VITE_API_URL is set
+  if (import.meta.env.PROD) {
+    // Use absolute URL to the backend API
+    const url = `https://api.wonderlens.app${endpoint}`;
+    console.log('🔍 Using production URL:', url);
+    return url;
+  }
+  
   // Otherwise use the configured API_BASE_URL (may be empty string if API is on same domain)
   const url = `${API_BASE_URL}${endpoint}`;
   console.log('🔍 Using API URL:', url);
