@@ -99,7 +99,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Content sections with responsive layout */}
-      <div className="md:ipad-split-view">
+      <div className="md:grid md:grid-cols-2 md:gap-6 space-y-5 md:space-y-0">
         {/* Daily News Section - Now using the WonderLensDaily component */}
         <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
           <Section title="Daily News">

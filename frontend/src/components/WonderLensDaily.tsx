@@ -87,6 +87,21 @@ const CATEGORY_COLORS: Record<string, string> = {
   'Culture Pop': '#ffb4a2',
 };
 
+// Add this helper function before the WonderLensDaily component
+const CATEGORY_BACKGROUNDS: Record<string, string> = {
+  'Science Spark': '#FFF9E6', // Light yellow
+  'Space & Sky': '#E6F4FF', // Light blue
+  'Animals & Nature': '#E6FFF0', // Light green
+  'Tech & Inventions': '#F3E6FF', // Light purple
+  'Math & Logic Fun': '#FFECE6', // Light orange
+  'Culture Pop': '#FFE6E6', // Light pink
+};
+
+// Helper function to get category background color
+const getCategoryBackground = (category: string): string => {
+  return CATEGORY_BACKGROUNDS[category] || '#EEF2FF'; // Default light blue if category not found
+};
+
 // Modal component to be rendered via portal
 const StoryModal = ({ 
   story, 
@@ -323,9 +338,9 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
         
         <div style={{ 
           display: 'flex', 
-          gap: 14, 
+          gap: 16,
           overflowX: 'auto', 
-          padding: '10px 16px 14px 16px', 
+          padding: '12px 16px 16px 16px',
           alignItems: 'center', 
           scrollbarWidth: 'none',
           WebkitOverflowScrolling: 'touch'
@@ -335,7 +350,7 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
               key={story.category}
               style={{
                 position: 'relative',
-                width: 68,
+                width: 82,
                 flex: '0 0 auto',
                 display: 'flex',
                 flexDirection: 'column',
@@ -347,27 +362,32 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
               <div 
                 style={{
                   position: 'relative',
-                  padding: 2, // Border padding
+                  padding: 3,
                   borderRadius: '50%',
                   background: isRead(story.category) 
-                    ? '#e0e0e0' // Gray for read stories
-                    : `linear-gradient(45deg, ${CATEGORY_COLORS[story.category] || '#5E7BFF'}, #738FFF)`
+                    ? 'linear-gradient(145deg, #f0f0f0, #d4d4d4)' // Subtle gradient for read stories
+                    : `linear-gradient(135deg, ${CATEGORY_COLORS[story.category] || '#5E7BFF'}, ${CATEGORY_COLORS[story.category] || '#4A6AFF'} 40%, #738FFF)`,
+                  boxShadow: isRead(story.category)
+                    ? '0px 2px 8px rgba(0,0,0,0.05)'
+                    : '0px 3px 12px rgba(94, 123, 255, 0.25)'
                 }}
               >
                 <div
                   style={{
-                    width: 60,
-                    height: 60,
+                    width: 76,
+                    height: 76,
                     borderRadius: '50%',
-                    background: '#fff',
+                    background: isRead(story.category)
+                      ? '#f8f8f8' // Very light gray for read items
+                      : getCategoryBackground(story.category), // Get pastel background color based on category
                     border: 'none',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    transition: 'transform 0.15s',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    transition: 'all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)', // Improved animation
+                    boxShadow: 'inset 0 -2px 4px rgba(0,0,0,0.03)', // Subtle inner shadow for depth
                     outline: 'none',
                     overflow: 'hidden'
                   }}
@@ -376,13 +396,32 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
                     setSelectedIdx(_idx);
                     markAsRead(story.category);
                   }}
-                  onMouseDown={e => (e.currentTarget.style.transform = 'scale(1.05)')}
-                  onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.95)')} // Subtle press effect
+                  onMouseUp={e => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                      if (e.currentTarget) e.currentTarget.style.transform = 'scale(1)';
+                    }, 150);
+                  }}
                   onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-                  onTouchStart={e => (e.currentTarget.style.transform = 'scale(1.05)')}
-                  onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.95)')}
+                  onTouchEnd={e => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                      if (e.currentTarget) e.currentTarget.style.transform = 'scale(1)';
+                    }, 150);
+                  }}
                 >
-                  <span style={{ fontSize: 28 }}>{CATEGORY_EMOJIS[story.category] || '📰'}</span>
+                  <span style={{ 
+                    fontSize: 36,
+                    filter: isRead(story.category) ? 'grayscale(0.6)' : 'none', // Desaturate emojis for read stories
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                    background: isRead(story.category) ? 'none' : 'radial-gradient(circle at center, rgba(255,255,255,0.8) 60%, rgba(94, 123, 255, 0.2))',
+                  }}>{CATEGORY_EMOJIS[story.category] || '📰'}</span>
                 </div>
               </div>
               
@@ -397,7 +436,8 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
                   maxWidth: '100%',
                   overflow: 'hidden',
                   whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis'
+                  textOverflow: 'ellipsis',
+                  transition: 'color 0.3s ease'
                 }}
               >
                 {story.category.split(' ')[0]}
