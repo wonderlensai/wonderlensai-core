@@ -3,11 +3,13 @@ import { FaRocket, FaPalette, FaTree } from "react-icons/fa";
 import SocialGraph from "../components/SocialGraph";
 import Section from "../components/Section";
 import PageContainer from "../components/PageContainer";
-// import WonderLensDaily from "../components/WonderLensDaily"; // Uncomment if using this component
+import WonderLensDaily from "../components/WonderLensDaily"; // Using the Daily News component
 
 // Updated logo with better quality
 const LOGO_URL = "https://zgbkpnceymplssmpxgsi.supabase.co/storage/v1/object/public/assets//Header_logo.png?width=300&quality=100";
 
+// These static avatars are being replaced by dynamic content from the WonderLensDaily component
+// Keeping the definition for reference but it's no longer used
 const NEWS_AVATARS = [
   {
     title: "Puppy News",
@@ -98,58 +100,10 @@ const Home: React.FC = () => {
 
       {/* Content sections with responsive layout */}
       <div className="md:ipad-split-view">
-        {/* Daily News Section */}
+        {/* Daily News Section - Now using the WonderLensDaily component */}
         <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
           <Section title="Daily News">
-            <div className="flex gap-4 overflow-x-auto pb-3 w-full hide-scrollbar px-1" 
-              style={{
-                WebkitOverflowScrolling: 'touch',
-                display: 'grid',
-                gridTemplateColumns: isIpad 
-                  ? 'repeat(auto-fill, minmax(80px, 1fr))' 
-                  : 'repeat(6, 72px)',
-                gridGap: '16px',
-                justifyContent: 'start',
-                overflow: 'auto'
-              }}
-            >
-              {NEWS_AVATARS.map((avatar, idx) => (
-                <div
-                  key={idx}
-                  className="flex flex-col items-center cursor-pointer flex-none"
-                  onClick={() => setSelectedNews(idx)}
-                  style={{ width: isIpad ? '80px' : '72px' }}
-                >
-                  <div
-                    className={`rounded-full overflow-hidden transition-all duration-300`}
-                    style={{ 
-                      width: isIpad ? '80px' : '68px', 
-                      height: isIpad ? '80px' : '68px',
-                      border: `3px solid ${selectedNews === idx ? 'var(--color-primary)' : 'transparent'}`,
-                      transform: selectedNews === idx ? 'scale(1.05)' : 'scale(1)',
-                      boxShadow: selectedNews === idx ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-                    }}
-                  >
-                    <img
-                      src={avatar.image}
-                      alt={avatar.title}
-                      className="w-full h-full object-cover"
-                      loading="eager"
-                    />
-                  </div>
-                  <span 
-                    className="mt-2 text-xs md:text-sm font-bold text-center truncate w-full"
-                    style={{ 
-                      color: selectedNews === idx ? 'var(--color-primary)' : 'var(--color-text-primary)',
-                      opacity: selectedNews === idx ? 1 : 0.7,
-                      transition: 'all var(--transition-normal)',
-                    }}
-                  >
-                    {avatar.title}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <WonderLensDaily />
           </Section>
         </div>
 

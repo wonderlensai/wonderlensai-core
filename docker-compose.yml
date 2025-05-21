@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Main Backend API
+  api:
+    build:
+      context: ./backend
+    restart: always
+    env_file: ./backend/.env
+    ports:
+      - "7001:7001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm start
+
+  # Daily News Generator - runs once a day
+  daily-news:
+    build:
+      context: ./backend
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: >
+      sh -c "
+        echo '0 4 * * * node /app/scripts/generate_kidnews.js >> /app/scripts/cron.log 2>&1' > /etc/crontabs/root &&
+        crond -f -d 8
+      "
+    restart: always
+    depends_on:
+      - api
+
+  # Frontend (optional - can be developed separately)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   command: npm run dev
+  #   depends_on:
+  #     - api 
