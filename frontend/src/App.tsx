@@ -123,9 +123,51 @@ function AppShell({ children }: { children: React.ReactNode }) {
     };
     
     window.addEventListener('popstate', handleRouteChange);
+
+    // Detect iPad/tablet devices
+    const isIpad = () => {
+      // Check if device is iPad-sized or larger
+      return window.innerWidth >= 768 && 
+             (navigator.userAgent.includes('iPad') || 
+              (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document));
+    };
+
+    // Set class on body for device-specific styling
+    const setDeviceClass = () => {
+      if (isIpad()) {
+        document.body.classList.add('is-ipad');
+        // For larger iPad Pro
+        if (window.innerWidth >= 1024) {
+          document.body.classList.add('is-ipad-pro');
+        }
+      } else {
+        document.body.classList.add('is-mobile');
+      }
+
+      // Add orientation classes
+      if (window.innerWidth > window.innerHeight) {
+        document.body.classList.add('landscape');
+      } else {
+        document.body.classList.add('portrait');
+      }
+    };
+
+    // Handle orientation changes
+    const handleResize = () => {
+      document.body.classList.remove('landscape', 'portrait');
+      if (window.innerWidth > window.innerHeight) {
+        document.body.classList.add('landscape');
+      } else {
+        document.body.classList.add('portrait');
+      }
+    };
+
+    setDeviceClass();
+    window.addEventListener('resize', handleResize);
     
     return () => {
       window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -159,9 +201,12 @@ function AppShell({ children }: { children: React.ReactNode }) {
       </div>
       
       {/* App content with safe area inset padding */}
-      <div className="app-container pt-4" style={{ 
-        paddingTop: 'calc(env(safe-area-inset-top) + 4px)'
-      }}>
+      <div 
+        className="app-container pt-4 md:pt-6" 
+        style={{ 
+          paddingTop: 'calc(env(safe-area-inset-top) + 4px)'
+        }}
+      >
         {children}
       </div>
       

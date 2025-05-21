@@ -4,9 +4,9 @@
   "description": "Discover scientific wonders and explore learning through WonderLens",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#F7F9FC",
-  "theme_color": "#FF6B6B",
+  "orientation": "any",
+  "background_color": "#F8FAFF",
+  "theme_color": "#5E7BFF",
   "icons": [
     { "src": "/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "any maskable" },
     { "src": "/icon-96x96.png", "sizes": "96x96", "type": "image/png", "purpose": "any maskable" },
@@ -15,7 +15,8 @@
     { "src": "/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "any maskable" },
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any maskable" }
   ],
   "shortcuts": [
     {
@@ -34,8 +35,10 @@
     }
   ],
   "screenshots": [
-    { "src": "/screenshots/home-screen.png", "sizes": "1080x1920", "type": "image/png" },
-    { "src": "/screenshots/scan-screen.png", "sizes": "1080x1920", "type": "image/png" }
+    { "src": "/screenshots/home-screen.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" },
+    { "src": "/screenshots/scan-screen.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" },
+    { "src": "/screenshots/ipad-home-screen.png", "sizes": "2048x1536", "type": "image/png", "form_factor": "wide" },
+    { "src": "/screenshots/ipad-learn-screen.png", "sizes": "2048x1536", "type": "image/png", "form_factor": "wide" }
   ],
   "id": "wonderlens-ai-pwa",
   "dir": "ltr",
@@ -44,6 +47,14 @@
   "categories": ["education", "kids", "learning"],
   "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "scope": "/",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
   "serviceworker": {
     "src": "/service-worker.js",
     "scope": "/"

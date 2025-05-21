@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -9,11 +9,19 @@ import {
   IconButton,
   CircularProgress,
   Tabs,
-  Tab
+  Tab,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  CardActionArea,
+  Divider
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import HistoryIcon from '@mui/icons-material/History';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 
 // Enhanced styled components with premium feel
@@ -106,6 +114,31 @@ const AnalyzeButton = styled(Button)(() => ({
   transition: 'all 0.3s ease',
 }));
 
+// Interface for cached scanned items
+interface ScannedItem {
+  id: string;
+  timestamp: number;
+  imageData: string;
+  learningData: {
+    object: string;
+    category?: string;
+    lenses: Array<{ name: string; text: string }>;
+    message?: string;
+    countryInfo?: {
+      origin: string;
+      relevance: string;
+    };
+    vocabulary?: {
+      primaryTerm: string;
+      relatedTerms: string[];
+      simpleDef: string;
+    };
+  };
+}
+
+// Cache key for storing items in localStorage
+const CACHE_KEY = 'wonderlens_scanned_items';
+
 // Utility to compress image to below 100 KB
 async function compressImageToBase64(
   fileOrDataUrl: File | string,
@@ -192,6 +225,7 @@ function getDeviceInfo() {
 }
 
 const Scan = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -201,6 +235,96 @@ const Scan = () => {
   const [tab, setTab] = useState(0); // 0 = Camera, 1 = Upload
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [cachedItems, setCachedItems] = useState<ScannedItem[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  // Load cached items
+  useEffect(() => {
+    const fetchScanHistory = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Get device ID for the current session
+        const deviceId = getDeviceId();
+        
+        // Fetch scan history from the backend
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/scans/history?device_id=${deviceId}`);
+        
+        if (!response.ok) {
+          console.error('Error fetching scan history:', response.status);
+          return;
+        }
+        
+        const historyData = await response.json();
+        console.log('[Frontend] Received scan history:', historyData);
+        
+        // Transform the backend response to match the ScannedItem interface
+        const transformedItems: ScannedItem[] = historyData.map((item: any) => ({
+          id: item.id,
+          timestamp: item.timestamp,
+          imageData: item.image_url, // This might need conversion if it's a Supabase URL
+          learningData: item.learningData
+        }));
+        
+        setCachedItems(transformedItems);
+        setShowHistory(transformedItems.length > 0);
+      } catch (error) {
+        console.error('Error fetching scan history:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchScanHistory();
+  }, []);
+
+  // Function to handle viewing a cached item
+  const handleViewCachedItem = (item: ScannedItem) => {
+    // Navigate to learning card page with the item data
+    // The image could be a URL or base64 - the LearningCards component handles both
+    navigate('/learning-card', {
+      state: {
+        imageData: item.imageData,
+        learningData: item.learningData,
+      },
+    });
+  };
+
+  // Function to delete a cached item
+  const handleDeleteCachedItem = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    
+    try {
+      // Send delete request to backend
+      const deviceId = getDeviceId();
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/scans/${id}?device_id=${deviceId}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to delete item:', response.status);
+        return;
+      }
+      
+      // Update state
+      const updatedItems = cachedItems.filter(item => item.id !== id);
+      setCachedItems(updatedItems);
+      setShowHistory(updatedItems.length > 0);
+    } catch (error) {
+      console.error('Error deleting cached item:', error);
+    }
+  };
+
+  // Format date for display
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
 
   // Stop camera utility
   const stopCamera = () => {
@@ -554,6 +678,148 @@ const Scan = () => {
               : 'Upload an image to learn more about it!'}
           </Typography>
         </motion.div>
+
+        {/* Previously Scanned Items Section */}
+        {cachedItems.length > 0 && (
+          <Box sx={{ mt: 7, width: '100%' }}>
+            {/* History Header */}
+            <Box 
+              sx={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                mb: 3,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <HistoryIcon sx={{ mr: 1, color: '#6C63FF' }} />
+                <Typography 
+                  variant="h6" 
+                  sx={{ fontWeight: 600, color: '#2D3748' }}
+                >
+                  Previously Scanned
+                </Typography>
+              </Box>
+              <Button 
+                onClick={() => setShowHistory(!showHistory)}
+                sx={{ fontSize: '0.875rem' }}
+              >
+                {showHistory ? 'Hide' : 'Show'}
+              </Button>
+            </Box>
+
+            {/* Cached Items Grid */}
+            {showHistory && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Grid container spacing={2}>
+                  {cachedItems.map((item) => (
+                    <Grid item xs={6} sm={4} key={item.id}>
+                      <Card 
+                        sx={{ 
+                          borderRadius: 3, 
+                          overflow: 'hidden',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                          }
+                        }}
+                      >
+                        <CardActionArea onClick={() => handleViewCachedItem(item)}>
+                          <Box sx={{ position: 'relative', height: 120 }}>
+                            <CardMedia
+                              component="img"
+                              height="120"
+                              image={item.imageData}
+                              alt={`Scanned ${item.learningData.object}`}
+                              sx={{ 
+                                objectFit: 'cover',
+                                backgroundColor: '#f0f0f0'
+                              }}
+                              onError={(e) => {
+                                // If image fails to load from URL, show a placeholder
+                                const target = e.target as HTMLImageElement;
+                                target.onerror = null; // Prevent infinite error loop
+                                target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLWltYWdlIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiI+PC9yZWN0PjxjaXJjbGUgY3g9IjguNSIgY3k9IjguNSIgcj0iMS41Ij48L2NpcmNsZT48cG9seWxpbmUgcG9pbnRzPSIyMSAxNSAxNiAxMCA1IDIxIj48L3BvbHlsaW5lPjwvc3ZnPg==';
+                              }}
+                            />
+                          </Box>
+                          <CardContent sx={{ p: 1.5 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                              <Box>
+                                <Typography 
+                                  variant="subtitle2" 
+                                  sx={{ 
+                                    fontWeight: 700,
+                                    fontSize: '0.85rem',
+                                    lineHeight: 1.2,
+                                  }}
+                                  noWrap
+                                >
+                                  {item.learningData.object}
+                                </Typography>
+                                {item.learningData.category && (
+                                  <Typography 
+                                    variant="caption" 
+                                    sx={{ 
+                                      color: 'text.primary',
+                                      fontSize: '0.7rem',
+                                      bgcolor: '#f0f0f0',
+                                      px: 0.5,
+                                      py: 0.2,
+                                      borderRadius: 1,
+                                      display: 'inline-block',
+                                      mt: 0.5
+                                    }}
+                                  >
+                                    {item.learningData.category}
+                                  </Typography>
+                                )}
+                                <Typography 
+                                  variant="caption" 
+                                  sx={{ 
+                                    color: 'text.secondary',
+                                    fontSize: '0.7rem',
+                                  }}
+                                >
+                                  {formatDate(item.timestamp)}
+                                </Typography>
+                              </Box>
+                              <Box
+                                onClick={(e) => handleDeleteCachedItem(item.id, e)}
+                                sx={{ 
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  p: 0.5,
+                                  color: 'rgba(0,0,0,0.3)',
+                                  borderRadius: '50%',
+                                  cursor: 'pointer',
+                                  '&:hover': { 
+                                    color: '#FF6B6B',
+                                    backgroundColor: 'rgba(255,107,107,0.1)' 
+                                  }
+                                }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </motion.div>
+            )}
+          </Box>
+        )}
       </Container>
     </Box>
   );

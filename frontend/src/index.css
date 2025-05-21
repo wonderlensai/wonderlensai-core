@@ -46,6 +46,14 @@
   --sar: env(safe-area-inset-right);
   --sab: env(safe-area-inset-bottom);
   --sal: env(safe-area-inset-left);
+
+  /* Responsive layout settings */
+  --content-max-width-mobile: 600px;
+  --content-max-width-tablet: 768px;
+  --content-max-width-desktop: 1024px;
+  --content-padding-mobile: 16px;
+  --content-padding-tablet: 24px;
+  --content-padding-desktop: 32px;
   
   font-family: var(--font-family);
   line-height: 1.5;
@@ -179,17 +187,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Custom utility classes for app spacing */
 .app-container {
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: var(--content-padding-mobile);
+  padding-right: var(--content-padding-mobile);
   width: 100%;
-  max-width: 600px;
+  max-width: var(--content-max-width-mobile);
   margin-left: auto;
   margin-right: auto;
 }
 
 .app-side-margin {
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: var(--content-padding-mobile);
+  margin-right: var(--content-padding-mobile);
 }
 
 .app-header {
@@ -211,4 +219,87 @@ h1, h2, h3, h4, h5, h6 {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Responsive layouts for iPad and larger screens */
+@media (min-width: 768px) {
+  .app-container {
+    padding-left: var(--content-padding-tablet);
+    padding-right: var(--content-padding-tablet);
+    max-width: var(--content-max-width-tablet);
+  }
+  
+  .app-side-margin {
+    margin-left: var(--content-padding-tablet);
+    margin-right: var(--content-padding-tablet);
+  }
+  
+  /* Adjusted card grid for tablet */
+  .tablet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  /* Larger font sizes for tablets */
+  .section-heading {
+    font-size: 1.75rem;
+  }
+  
+  /* More padding in cards for tablets */
+  .kid-card {
+    padding: 24px;
+  }
+}
+
+/* Desktop and larger iPad Pro layouts */
+@media (min-width: 1024px) {
+  .app-container {
+    padding-left: var(--content-padding-desktop);
+    padding-right: var(--content-padding-desktop);
+    max-width: var(--content-max-width-desktop);
+  }
+  
+  .app-side-margin {
+    margin-left: var(--content-padding-desktop);
+    margin-right: var(--content-padding-desktop);
+  }
+  
+  /* Desktop-friendly grid */
+  .desktop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  
+  /* Enhance navigation for desktop/iPad Pro */
+  .desktop-navigation {
+    max-width: var(--content-max-width-desktop);
+  }
+}
+
+/* Landscape orientation for iPad */
+@media (min-width: 768px) and (orientation: landscape) {
+  .landscape-layout {
+    display: flex;
+    gap: 24px;
+  }
+  
+  .landscape-layout .sidebar {
+    width: 280px;
+    flex-shrink: 0;
+  }
+  
+  .landscape-layout .main-content {
+    flex: 1;
+  }
+}
+
+/* iPad specific adjustments for split view */
+@supports (display: grid) and (min-width: 768px) {
+  .ipad-split-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
 }

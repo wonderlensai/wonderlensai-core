@@ -12,6 +12,20 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Helper function to format storage URLs properly
+function getPublicUrl(path) {
+  if (!path) return null;
+  
+  // If already a complete URL, return as is
+  if (path.startsWith('http')) return path;
+  
+  // If it's a base64 string, return as is
+  if (path.startsWith('data:')) return path;
+  
+  // Otherwise, construct a proper Supabase storage URL
+  return `${process.env.SUPABASE_URL}/storage/v1/object/public/${path}`;
+}
+
 // Helper function to inspect table structure
 async function inspectTable(tableName) {
   const { data, error } = await supabase
@@ -31,4 +45,4 @@ async function inspectTable(tableName) {
   return null;
 }
 
-module.exports = { supabase, inspectTable }; 
+module.exports = { supabase, inspectTable, getPublicUrl }; 

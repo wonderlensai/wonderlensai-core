@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const analyzeRouter = require('./routes/analyze');
 const kidnewsRouter = require('./routes/kidnews');
+const scansRouter = require('./routes/scans');
 const { createClient } = require('@supabase/supabase-js');
 console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
 console.log('SUPABASE_KEY:', process.env.SUPABASE_KEY ? 'Yes' : 'No');
@@ -58,6 +59,9 @@ app.use('/api/analyze-image', analyzeRouter);
 
 // Mount the kidnews router
 app.use('/api/kidnews', kidnewsRouter);
+
+// Mount the scans router
+app.use('/api/scans', scansRouter);
 
 const PORT = process.env.PORT || 7001;
 app.listen(PORT, () => {

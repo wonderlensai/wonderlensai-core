@@ -64,9 +64,10 @@ const SHARED_LEARNING_IMAGE =
 
 const Home: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState(0);
+  const isIpad = typeof window !== 'undefined' && window.innerWidth >= 768;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 md:space-y-8">
       {/* Integrated app header with logo */}
       <div className="app-header -mx-4 sm:-mx-6 px-4 sm:px-6 pt-5 pb-8 -mt-4 relative">
         {/* Background decorative elements */}
@@ -86,7 +87,7 @@ const Home: React.FC = () => {
             src={LOGO_URL}
             alt="WonderLensAI Logo"
             style={{ 
-              width: '270px',
+              width: isIpad ? '320px' : '270px',
               height: 'auto',
               objectFit: 'contain',
               filter: 'drop-shadow(0 3px 6px rgba(94, 123, 255, 0.25))',
@@ -95,115 +96,130 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Content sections with borders */}
-      <div className="bg-white rounded-2xl p-5 kid-card shadow-md">
+      {/* Content sections with responsive layout */}
+      <div className="md:ipad-split-view">
         {/* Daily News Section */}
-        <Section title="Daily News">
-          <div className="flex gap-4 overflow-x-auto pb-3 w-full hide-scrollbar px-1" style={{WebkitOverflowScrolling: 'touch'}}>
-            {NEWS_AVATARS.map((avatar, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col items-center cursor-pointer flex-none"
-                onClick={() => setSelectedNews(idx)}
-                style={{ width: '72px' }}
-              >
+        <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
+          <Section title="Daily News">
+            <div className="flex gap-4 overflow-x-auto pb-3 w-full hide-scrollbar px-1" 
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                display: 'grid',
+                gridTemplateColumns: isIpad 
+                  ? 'repeat(auto-fill, minmax(80px, 1fr))' 
+                  : 'repeat(6, 72px)',
+                gridGap: '16px',
+                justifyContent: 'start',
+                overflow: 'auto'
+              }}
+            >
+              {NEWS_AVATARS.map((avatar, idx) => (
                 <div
-                  className={`rounded-full overflow-hidden transition-all duration-300`}
-                  style={{ 
-                    width: '68px', 
-                    height: '68px',
-                    border: `3px solid ${selectedNews === idx ? 'var(--color-primary)' : 'transparent'}`,
-                    transform: selectedNews === idx ? 'scale(1.05)' : 'scale(1)',
-                    boxShadow: selectedNews === idx ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-                  }}
+                  key={idx}
+                  className="flex flex-col items-center cursor-pointer flex-none"
+                  onClick={() => setSelectedNews(idx)}
+                  style={{ width: isIpad ? '80px' : '72px' }}
                 >
-                  <img
-                    src={avatar.image}
-                    alt={avatar.title}
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                  />
-                </div>
-                <span 
-                  className="mt-2 text-xs font-bold text-center truncate w-full"
-                  style={{ 
-                    color: selectedNews === idx ? 'var(--color-primary)' : 'var(--color-text-primary)',
-                    opacity: selectedNews === idx ? 1 : 0.7,
-                    transition: 'all var(--transition-normal)',
-                  }}
-                >
-                  {avatar.title}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </div>
-
-      {/* Quiz Section */}
-      <div className="bg-white rounded-2xl p-5 kid-card shadow-md">
-        <Section title="Quiz">
-          <div 
-            className="flex overflow-x-auto w-full items-start hide-scrollbar px-1" 
-            style={{
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
-            {QUIZZES.map((quiz, idx) => (
-              <div
-                key={quiz.label}
-                className="flex-none flex flex-col items-center"
-                style={{
-                  marginRight: '20px',
-                  width: '104px',
-                }}
-              >
-                {/* Image container */}
-                <div 
-                  className="flex items-center justify-center cursor-pointer mb-3 relative overflow-hidden transition-all duration-300"
-                  onClick={() => alert(`${quiz.label} coming soon!`)}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    backgroundColor: quiz.color,
-                    border: 'none',
-                    boxShadow: 'var(--shadow-md)',
-                    borderRadius: 'var(--radius-lg)',
-                  }}
-                >
-                  {/* Gradient overlay for images */}
-                  <div className="absolute inset-0 opacity-20" style={{
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%)',
-                  }} />
-                  
-                  {quiz.image && (
+                  <div
+                    className={`rounded-full overflow-hidden transition-all duration-300`}
+                    style={{ 
+                      width: isIpad ? '80px' : '68px', 
+                      height: isIpad ? '80px' : '68px',
+                      border: `3px solid ${selectedNews === idx ? 'var(--color-primary)' : 'transparent'}`,
+                      transform: selectedNews === idx ? 'scale(1.05)' : 'scale(1)',
+                      boxShadow: selectedNews === idx ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+                    }}
+                  >
                     <img
-                      src={quiz.image}
-                      alt={quiz.label}
+                      src={avatar.image}
+                      alt={avatar.title}
                       className="w-full h-full object-cover"
-                      style={{ borderRadius: 'var(--radius-lg)' }}
                       loading="eager"
                     />
-                  )}
-                </div>
-                
-                {/* Text container */}
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <span style={{ fontSize: '15px', color: quiz.iconColor }}>{quiz.icon}</span>
-                  <span className="font-bold text-center text-xs" style={{ color: 'var(--color-text-primary)' }}>
-                    {quiz.label}
+                  </div>
+                  <span 
+                    className="mt-2 text-xs md:text-sm font-bold text-center truncate w-full"
+                    style={{ 
+                      color: selectedNews === idx ? 'var(--color-primary)' : 'var(--color-text-primary)',
+                      opacity: selectedNews === idx ? 1 : 0.7,
+                      transition: 'all var(--transition-normal)',
+                    }}
+                  >
+                    {avatar.title}
                   </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        </Section>
+              ))}
+            </div>
+          </Section>
+        </div>
+
+        {/* Quiz Section */}
+        <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
+          <Section title="Quiz">
+            <div 
+              className="flex md:grid overflow-x-auto w-full items-start hide-scrollbar px-1" 
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                gridTemplateColumns: isIpad ? 'repeat(auto-fill, minmax(120px, 1fr))' : 'unset',
+                gridGap: '20px',
+              }}
+            >
+              {QUIZZES.map((quiz, idx) => (
+                <div
+                  key={quiz.label}
+                  className="flex-none flex flex-col items-center"
+                  style={{
+                    marginRight: isIpad ? '0' : '20px',
+                    width: isIpad ? 'auto' : '104px',
+                  }}
+                >
+                  {/* Image container */}
+                  <div 
+                    className="flex items-center justify-center cursor-pointer mb-3 relative overflow-hidden transition-all duration-300"
+                    onClick={() => alert(`${quiz.label} coming soon!`)}
+                    style={{
+                      width: isIpad ? '120px' : '100px',
+                      height: isIpad ? '120px' : '100px',
+                      backgroundColor: quiz.color,
+                      border: 'none',
+                      boxShadow: 'var(--shadow-md)',
+                      borderRadius: 'var(--radius-lg)',
+                    }}
+                  >
+                    {/* Gradient overlay for images */}
+                    <div className="absolute inset-0 opacity-20" style={{
+                      background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%)',
+                    }} />
+                    
+                    {quiz.image && (
+                      <img
+                        src={quiz.image}
+                        alt={quiz.label}
+                        className="w-full h-full object-cover"
+                        style={{ borderRadius: 'var(--radius-lg)' }}
+                        loading="eager"
+                      />
+                    )}
+                  </div>
+                  
+                  {/* Text container */}
+                  <div className="flex items-center justify-center gap-2 mt-1">
+                    <span style={{ fontSize: isIpad ? '18px' : '15px', color: quiz.iconColor }}>{quiz.icon}</span>
+                    <span className="font-bold text-center text-xs md:text-sm" style={{ color: 'var(--color-text-primary)' }}>
+                      {quiz.label}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </div>
       </div>
 
-      {/* Shared Learning Section */}
-      <div className="bg-white rounded-2xl p-5 kid-card shadow-md">
+      {/* Shared Learning Section - Full width on all devices */}
+      <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
         <Section title="Shared Learning">
-          <div className="w-full h-[320px] rounded-xl overflow-hidden flex items-center justify-center" style={{
+          <div className="w-full md:h-[400px] h-[320px] rounded-xl overflow-hidden flex items-center justify-center" style={{
             boxShadow: 'var(--shadow-md)',
             border: '1px solid rgba(94, 123, 255, 0.1)',
             background: '#010D24', // Dark background for graph contrast
