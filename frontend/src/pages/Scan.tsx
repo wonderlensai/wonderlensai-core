@@ -842,8 +842,8 @@ const Scan = () => {
                   ))}
                 </Grid>
                 
-                {/* Add Load More button if there are more items */}
-                {cachedItems.length > 6 && (
+                {/* Add Load More button if there are any items */}
+                {cachedItems.length > 0 && (
                   <Box sx={{ textAlign: 'center', mt: 3 }}>
                     <Button
                       variant="outlined"
