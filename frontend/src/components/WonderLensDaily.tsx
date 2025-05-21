@@ -8,22 +8,30 @@ import 'swiper/css/pagination';
 // Environment-specific API URL
 // If VITE_API_URL is not set, we assume we're running in the same domain as the API
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+console.log('🔍 API_BASE_URL:', API_BASE_URL);
+console.log('🔍 Environment:', import.meta.env.MODE); // 'development' or 'production'
 
 // Helper function to determine if we're running in development
 const isDevelopment = () => {
-  return import.meta.env.DEV || 
+  const dev = import.meta.env.DEV || 
          window.location.hostname === 'localhost' || 
          window.location.hostname === '127.0.0.1';
+  console.log('🔍 isDevelopment:', dev);
+  return dev;
 };
 
 // Get the correct API endpoint based on environment
 const getApiUrl = (endpoint: string) => {
   // In development without explicit VITE_API_URL, use localhost
   if (isDevelopment() && !import.meta.env.VITE_API_URL) {
-    return `http://localhost:7001${endpoint}`;
+    const url = `http://localhost:7001${endpoint}`;
+    console.log('🔍 Using development URL:', url);
+    return url;
   }
   // Otherwise use the configured API_BASE_URL (may be empty string if API is on same domain)
-  return `${API_BASE_URL}${endpoint}`;
+  const url = `${API_BASE_URL}${endpoint}`;
+  console.log('🔍 Using API URL:', url);
+  return url;
 };
 
 interface Story {
@@ -170,6 +178,17 @@ const StoryModal = ({
 };
 
 const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country = 'global', age = 8 }) => {
+  console.log('🔍 WonderLensDaily Component Initialized');
+  console.log('🔍 Environment Check:', {
+    MODE: import.meta.env.MODE,
+    PROD: import.meta.env.PROD,
+    DEV: import.meta.env.DEV,
+    BASE_URL: import.meta.env.BASE_URL,
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+    hostname: window.location.hostname,
+    href: window.location.href
+  });
+
   const [news, setNews] = useState<KidNews | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -190,11 +209,34 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
 
   useEffect(() => {
     setLoading(true);
+    console.log('🔍 WonderLensDaily fetching news for:', { country, age });
+    
     // Use the getApiUrl helper function for consistent API URLs across environments
-    fetch(getApiUrl(`/api/kidnews?country=${country}&age=${age}`))
-      .then(res => res.ok ? res.json() : Promise.reject(res))
-      .then(setNews)
-      .catch(() => setError('No news found for today.'))
+    const apiUrl = getApiUrl(`/api/kidnews?country=${country}&age=${age}`);
+    console.log('🔍 Full API URL:', apiUrl);
+    
+    fetch(apiUrl)
+      .then(res => {
+        console.log('🔍 API Response Status:', res.status);
+        console.log('🔍 API Response OK:', res.ok);
+        if (!res.ok) {
+          console.error('🔍 API Error:', res.status, res.statusText);
+          return Promise.reject(new Error(`API error: ${res.status} ${res.statusText}`));
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log('🔍 API Data received:', data);
+        if (!data || typeof data !== 'object') {
+          console.error('🔍 Invalid data format:', data);
+          throw new Error('Invalid data format');
+        }
+        setNews(data);
+      })
+      .catch((error) => {
+        console.error('🔍 Fetch error:', error);
+        setError(error.message || 'No news found for today.');
+      })
       .finally(() => setLoading(false));
   }, [country, age]);
 
@@ -220,8 +262,12 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
 
   // Order stories with unread first, then read
   const getOrderedStories = () => {
-    if (!news?.stories) return [];
+    if (!news?.stories) {
+      console.log('🔍 No stories found in news data:', news);
+      return [];
+    }
     
+    console.log('🔍 Found stories in news data:', news.stories.length);
     return [...news.stories].sort((a, b) => {
       const aRead = isRead(a.category);
       const bRead = isRead(b.category);
@@ -232,10 +278,18 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
     });
   };
 
-  if (loading) return <div>Loading news...</div>;
-  if (error || !news) return <div>{error || 'No news available.'}</div>;
+  if (loading) {
+    console.log('🔍 WonderLensDaily in loading state');
+    return <div>Loading news...</div>;
+  }
+  
+  if (error || !news) {
+    console.log('🔍 WonderLensDaily in error state:', { error, news });
+    return <div>{error || 'No news available.'}</div>;
+  }
 
   const orderedStories = getOrderedStories();
+  console.log('🔍 Rendering with stories:', orderedStories.length);
 
   return (
     <div style={{ width: '100%', margin: '0', padding: 0, position: 'relative' }}>
