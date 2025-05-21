@@ -735,105 +735,109 @@ const Scan = () => {
                           }
                         }}
                       >
-                        <CardActionArea 
-                          onClick={() => handleViewCachedItem(item)}
-                          sx={{ 
-                            display: 'flex', 
-                            flexDirection: 'column', 
-                            height: '100%', 
-                            alignItems: 'stretch'
-                          }}
-                        >
-                          <Box sx={{ position: 'relative', width: '100%', pt: '75%' /* 4:3 Aspect Ratio */ }}>
-                            <CardMedia
-                              component="img"
-                              image={item.imageData}
-                              alt={`Scanned ${item.learningData.object}`}
-                              sx={{ 
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                backgroundColor: '#f0f0f0'
-                              }}
-                              onError={(e) => {
-                                // If image fails to load from URL, show a placeholder
-                                const target = e.target as HTMLImageElement;
-                                target.onerror = null; // Prevent infinite error loop
-                                target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLWltYWdlIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiI+PC9yZWN0PjxjaXJjbGUgY3g9IjguNSIgY3k9IjguNSIgcj0iMS41Ij48L2NpcmNsZT48cG9seWxpbmUgcG9pbnRzPSIyMSAxNSAxNiAxMCA1IDIxIj48L3BvbHlsaW5lPjwvc3ZnPg==';
-                              }}
-                            />
-                            <Box
+                        <Box sx={{ position: 'relative', width: '100%' }}>
+                          {/* Delete button outside of CardActionArea */}
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              right: 8,
+                              zIndex: 2,
+                            }}
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={(e) => handleDeleteCachedItem(item.id, e)}
                               sx={{
-                                position: 'absolute',
-                                top: 8,
-                                right: 8,
-                                zIndex: 1,
+                                bgcolor: 'rgba(255,255,255,0.8)',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                '&:hover': {
+                                  bgcolor: 'rgba(255,255,255,0.9)',
+                                },
                               }}
                             >
-                              <IconButton
-                                size="small"
-                                onClick={(e) => handleDeleteCachedItem(item.id, e)}
-                                sx={{
-                                  bgcolor: 'rgba(255,255,255,0.8)',
-                                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                  '&:hover': {
-                                    bgcolor: 'rgba(255,255,255,0.9)',
-                                  },
-                                }}
-                              >
-                                <DeleteIcon fontSize="small" sx={{ color: '#FF6B6B' }} />
-                              </IconButton>
-                            </Box>
+                              <DeleteIcon fontSize="small" sx={{ color: '#FF6B6B' }} />
+                            </IconButton>
                           </Box>
-                          <CardContent sx={{ p: 1.5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                            <Typography 
-                              variant="subtitle2" 
-                              sx={{ 
-                                fontWeight: 700,
-                                fontSize: '0.85rem',
-                                lineHeight: 1.2,
-                              }}
-                              noWrap
-                            >
-                              {item.learningData.object}
-                            </Typography>
-                            
-                            {item.learningData.category && (
+
+                          <CardActionArea 
+                            onClick={() => handleViewCachedItem(item)}
+                            sx={{ 
+                              display: 'flex', 
+                              flexDirection: 'column', 
+                              height: '100%', 
+                              alignItems: 'stretch'
+                            }}
+                          >
+                            <Box sx={{ position: 'relative', width: '100%', pt: '75%' /* 4:3 Aspect Ratio */ }}>
+                              <CardMedia
+                                component="img"
+                                image={item.imageData}
+                                alt={`Scanned ${item.learningData.object}`}
+                                sx={{ 
+                                  position: 'absolute',
+                                  top: 0,
+                                  left: 0,
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  backgroundColor: '#f0f0f0'
+                                }}
+                                onError={(e) => {
+                                  // If image fails to load from URL, show a placeholder
+                                  const target = e.target as HTMLImageElement;
+                                  target.onerror = null; // Prevent infinite error loop
+                                  target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLWltYWdlIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiI+PC9yZWN0PjxjaXJjbGUgY3g9IjguNSIgY3k9IjguNSIgcj0iMS41Ij48L2NpcmNsZT48cG9seWxpbmUgcG9pbnRzPSIyMSAxNSAxNiAxMCA1IDIxIj48L3BvbHlsaW5lPjwvc3ZnPg==';
+                                }}
+                              />
+                                                          </Box>
+                            <CardContent sx={{ p: 1.5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                              <Typography 
+                                variant="subtitle2" 
+                                sx={{ 
+                                  fontWeight: 700,
+                                  fontSize: '0.85rem',
+                                  lineHeight: 1.2,
+                                }}
+                                noWrap
+                              >
+                                {item.learningData.object}
+                              </Typography>
+                              
+                              {item.learningData.category && (
+                                <Typography 
+                                  variant="caption" 
+                                  sx={{ 
+                                    color: 'text.primary',
+                                    fontSize: '0.7rem',
+                                    bgcolor: '#f0f0f0',
+                                    px: 0.5,
+                                    py: 0.2,
+                                    borderRadius: 1,
+                                    display: 'inline-block',
+                                    mt: 0.5,
+                                    maxWidth: 'fit-content'
+                                  }}
+                                >
+                                  {item.learningData.category}
+                                </Typography>
+                              )}
+                              
                               <Typography 
                                 variant="caption" 
                                 sx={{ 
-                                  color: 'text.primary',
+                                  color: 'text.secondary',
                                   fontSize: '0.7rem',
-                                  bgcolor: '#f0f0f0',
-                                  px: 0.5,
-                                  py: 0.2,
-                                  borderRadius: 1,
-                                  display: 'inline-block',
-                                  mt: 0.5,
-                                  maxWidth: 'fit-content'
+                                  mt: 'auto',
+                                  pt: 0.5
                                 }}
                               >
-                                {item.learningData.category}
+                                {formatDate(item.timestamp)}
                               </Typography>
-                            )}
-                            
-                            <Typography 
-                              variant="caption" 
-                              sx={{ 
-                                color: 'text.secondary',
-                                fontSize: '0.7rem',
-                                mt: 'auto',
-                                pt: 0.5
-                              }}
-                            >
-                              {formatDate(item.timestamp)}
-                            </Typography>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
+                            </CardContent>
+                          </CardActionArea>
+                         </Box>
+                        </Card>
                     </Grid>
                   ))}
                 </Grid>
