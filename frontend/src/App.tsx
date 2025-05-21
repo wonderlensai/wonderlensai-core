@@ -203,9 +203,9 @@ function AppShell({ children }: { children: React.ReactNode }) {
       
       {/* App content with safe area inset padding */}
       <div 
-        className="app-container pt-2" 
+        className="app-container" 
         style={{ 
-          paddingTop: 'calc(env(safe-area-inset-top) + 2px)',
+          paddingTop: 'calc(env(safe-area-inset-top) + 16px)',
           padding: '4px 4px',
           maxWidth: '98%',
           width: '98%',
