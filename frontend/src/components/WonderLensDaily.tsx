@@ -35,9 +35,18 @@ const getApiUrl = (endpoint: string) => {
   
   // For production environment or when VITE_API_URL is set
   if (import.meta.env.PROD) {
-    // Use absolute URL to the backend API
-    const url = `https://api.wonderlens.app${endpoint}`;
-    console.log('🔍 Using production URL:', url);
+    // Try multiple potential API URLs in order of preference
+    // 1. Use VITE_API_URL from env if available
+    if (import.meta.env.VITE_API_URL) {
+      const url = `${import.meta.env.VITE_API_URL}${endpoint}`;
+      console.log('🔍 Using VITE_API_URL:', url);
+      return url;
+    }
+    
+    // 2. Use Render backend URL (where the API is hosted)
+    const renderUrl = 'https://wonderlensai-core.onrender.com';
+    const url = `${renderUrl}${endpoint}`;
+    console.log('🔍 Using Render backend URL:', url);
     return url;
   }
   
