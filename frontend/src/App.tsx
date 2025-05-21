@@ -185,27 +185,31 @@ function AppShell({ children }: { children: React.ReactNode }) {
       {/* App background decoration */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="animated-bg-shape" style={{
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(94, 123, 255, 0.15) 0%, rgba(94, 123, 255, 0) 70%)',
-          top: '-100px',
-          right: '-100px',
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(94, 123, 255, 0.07) 0%, rgba(94, 123, 255, 0) 70%)',
+          top: '-200px',
+          right: '-200px',
         }} />
         <div className="animated-bg-shape" style={{
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(111, 223, 223, 0.15) 0%, rgba(111, 223, 223, 0) 70%)',
-          bottom: '20%',
-          left: '-100px',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(111, 223, 223, 0.07) 0%, rgba(111, 223, 223, 0) 70%)',
+          bottom: '10%',
+          left: '-150px',
           animationDelay: '0.5s',
         }} />
       </div>
       
       {/* App content with safe area inset padding */}
       <div 
-        className="app-container pt-4 md:pt-6" 
+        className="app-container pt-2" 
         style={{ 
-          paddingTop: 'calc(env(safe-area-inset-top) + 4px)'
+          paddingTop: 'calc(env(safe-area-inset-top) + 2px)',
+          padding: '4px 4px',
+          maxWidth: '98%',
+          width: '98%',
+          margin: '0 auto'
         }}
       >
         {children}

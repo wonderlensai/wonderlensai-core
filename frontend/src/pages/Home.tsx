@@ -67,41 +67,39 @@ const Home: React.FC = () => {
   const isIpad = typeof window !== 'undefined' && window.innerWidth >= 768;
 
   return (
-    <div className="space-y-5 md:space-y-8">
-      {/* Integrated app header with logo */}
-      <div className="app-header -mx-4 sm:-mx-6 px-4 sm:px-6 pt-5 pb-8 -mt-4 relative">
-        {/* Background decorative elements */}
-        <div className="absolute top-8 left-5 w-24 h-24 rounded-full opacity-10" style={{
-          background: 'radial-gradient(circle, var(--color-primary-light), transparent 70%)',
-        }}></div>
-        <div className="absolute top-12 right-6 w-20 h-20 rounded-full opacity-10" style={{
-          background: 'radial-gradient(circle, var(--color-secondary), transparent 70%)',
-        }}></div>
-        <div className="absolute bottom-4 left-1/4 w-16 h-16 rounded-full opacity-10" style={{
-          background: 'radial-gradient(circle, var(--color-accent), transparent 70%)',
-        }}></div>
-        
-        {/* Logo centered */}
+    <div className="space-y-5 md:space-y-8" style={{
+      background: 'var(--color-background)',
+      borderRadius: 'var(--radius-lg)',
+      padding: '0 4px',
+      boxShadow: 'none',
+      margin: '0px',
+      width: '100%'
+    }}>
+      {/* Simplified app header with integrated logo */}
+      <div className="app-header px-2 pt-3 pb-3 relative" style={{ background: 'transparent', boxShadow: 'none' }}>
+        {/* Logo integrated with background */}
         <div className="flex justify-center items-center relative">
           <img
             src={LOGO_URL}
             alt="WonderLensAI Logo"
             style={{ 
-              width: isIpad ? '320px' : '270px',
+              width: isIpad ? '240px' : '200px',
               height: 'auto',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 3px 6px rgba(94, 123, 255, 0.25))',
+              opacity: 0.95,
+              filter: 'drop-shadow(0 2px 4px rgba(94, 123, 255, 0.15))',
+              marginBottom: '8px'
             }}
           />
         </div>
       </div>
 
-      {/* Content sections with responsive layout */}
-      <div className="md:ipad-split-view">
-        {/* Daily News Section */}
-        <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
+      {/* Content sections with responsive layout - Single layer with dividers */}
+      <div className="md:ipad-split-view" style={{ gap: '12px' }}>
+        {/* Daily News Section - No shadow */}
+        <div className="bg-white rounded-xl p-4 md:p-5">
           <Section title="Daily News">
-            <div className="flex gap-4 overflow-x-auto pb-3 w-full hide-scrollbar px-1" 
+            <div className="flex gap-4 overflow-x-auto pb-3 w-full hide-scrollbar px-2" 
               style={{
                 WebkitOverflowScrolling: 'touch',
                 display: 'grid',
@@ -125,9 +123,9 @@ const Home: React.FC = () => {
                     style={{ 
                       width: isIpad ? '80px' : '68px', 
                       height: isIpad ? '80px' : '68px',
-                      border: `3px solid ${selectedNews === idx ? 'var(--color-primary)' : 'transparent'}`,
+                      border: `2px solid ${selectedNews === idx ? 'var(--color-primary)' : 'transparent'}`,
                       transform: selectedNews === idx ? 'scale(1.05)' : 'scale(1)',
-                      boxShadow: selectedNews === idx ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+                      boxShadow: selectedNews === idx ? 'var(--shadow-sm)' : 'none',
                     }}
                   >
                     <img
@@ -153,11 +151,11 @@ const Home: React.FC = () => {
           </Section>
         </div>
 
-        {/* Quiz Section */}
-        <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
+        {/* Quiz Section - No shadow */}
+        <div className="bg-white rounded-xl p-4 md:p-5">
           <Section title="Quiz">
             <div 
-              className="flex md:grid overflow-x-auto w-full items-start hide-scrollbar px-1" 
+              className="flex md:grid overflow-x-auto w-full items-start hide-scrollbar" 
               style={{
                 WebkitOverflowScrolling: 'touch',
                 gridTemplateColumns: isIpad ? 'repeat(auto-fill, minmax(120px, 1fr))' : 'unset',
@@ -182,8 +180,8 @@ const Home: React.FC = () => {
                       height: isIpad ? '120px' : '100px',
                       backgroundColor: quiz.color,
                       border: 'none',
-                      boxShadow: 'var(--shadow-md)',
-                      borderRadius: 'var(--radius-lg)',
+                      boxShadow: 'var(--shadow-sm)',
+                      borderRadius: '10px',
                     }}
                   >
                     {/* Gradient overlay for images */}
@@ -216,12 +214,10 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Shared Learning Section - Full width on all devices */}
-      <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
+      {/* Shared Learning Section - No shadow */}
+      <div className="bg-white rounded-xl p-4 md:p-5">
         <Section title="Shared Learning">
           <div className="w-full md:h-[400px] h-[320px] rounded-xl overflow-hidden flex items-center justify-center" style={{
-            boxShadow: 'var(--shadow-md)',
-            border: '1px solid rgba(94, 123, 255, 0.1)',
             background: '#010D24', // Dark background for graph contrast
           }}>
             <SocialGraph />

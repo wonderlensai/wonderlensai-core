@@ -12,7 +12,7 @@ interface SectionProps {
  */
 const Section: React.FC<SectionProps> = ({ title, children, className = '' }) => {
   return (
-    <section className={`mb-7 mt-5 ${className}`}>
+    <section className={`mb-4 mt-3 ${className}`}>
       <div className="flex items-center mb-4">
         <h2 
           className="font-extrabold text-xl" 
@@ -25,7 +25,7 @@ const Section: React.FC<SectionProps> = ({ title, children, className = '' }) =>
         </h2>
         <div className="ml-3 h-1 flex-grow rounded-full" style={{ 
           background: 'linear-gradient(to right, var(--color-primary), var(--color-accent))',
-          opacity: 0.2,
+          opacity: 0.15,
           maxWidth: '40px'
         }} />
       </div>
