@@ -1113,7 +1113,7 @@ const LearningCards = () => {
                             countryName={enhancedData?.countryName} 
                             countryCode={enhancedData?.countryCode}
                             countries={enhancedData?.countries}
-                            funFact={null} // Remove the funFact to avoid duplication since we already show the geography facts above
+                            funFact={undefined} // Remove the funFact to avoid duplication since we already show the geography facts above
                             inline={true}
                             height={320}
                           />
