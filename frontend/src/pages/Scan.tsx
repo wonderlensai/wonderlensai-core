@@ -717,7 +717,8 @@ const Scan = () => {
                 transition={{ duration: 0.3 }}
               >
                 <Grid container spacing={2}>
-                  {cachedItems.map((item) => (
+                  {/* Limit to first 6 items (2 rows on mobile, 3 rows on desktop) */}
+                  {cachedItems.slice(0, 6).map((item) => (
                     <Grid item xs={6} sm={4} key={item.id}>
                       <Card 
                         sx={{ 
@@ -725,20 +726,35 @@ const Scan = () => {
                           overflow: 'hidden',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                           transition: 'all 0.2s',
+                          height: '100%', // Make all cards the same height
+                          display: 'flex',
+                          flexDirection: 'column',
                           '&:hover': {
                             transform: 'translateY(-4px)',
                             boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
                           }
                         }}
                       >
-                        <CardActionArea onClick={() => handleViewCachedItem(item)}>
-                          <Box sx={{ position: 'relative', height: 120 }}>
+                        <CardActionArea 
+                          onClick={() => handleViewCachedItem(item)}
+                          sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            height: '100%', 
+                            alignItems: 'stretch'
+                          }}
+                        >
+                          <Box sx={{ position: 'relative', width: '100%', pt: '75%' /* 4:3 Aspect Ratio */ }}>
                             <CardMedia
                               component="img"
-                              height="120"
                               image={item.imageData}
                               alt={`Scanned ${item.learningData.object}`}
                               sx={{ 
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
                                 objectFit: 'cover',
                                 backgroundColor: '#f0f0f0'
                               }}
@@ -749,73 +765,102 @@ const Scan = () => {
                                 target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLWltYWdlIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiI+PC9yZWN0PjxjaXJjbGUgY3g9IjguNSIgY3k9IjguNSIgcj0iMS41Ij48L2NpcmNsZT48cG9seWxpbmUgcG9pbnRzPSIyMSAxNSAxNiAxMCA1IDIxIj48L3BvbHlsaW5lPjwvc3ZnPg==';
                               }}
                             />
-                          </Box>
-                          <CardContent sx={{ p: 1.5 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                              <Box>
-                                <Typography 
-                                  variant="subtitle2" 
-                                  sx={{ 
-                                    fontWeight: 700,
-                                    fontSize: '0.85rem',
-                                    lineHeight: 1.2,
-                                  }}
-                                  noWrap
-                                >
-                                  {item.learningData.object}
-                                </Typography>
-                                {item.learningData.category && (
-                                  <Typography 
-                                    variant="caption" 
-                                    sx={{ 
-                                      color: 'text.primary',
-                                      fontSize: '0.7rem',
-                                      bgcolor: '#f0f0f0',
-                                      px: 0.5,
-                                      py: 0.2,
-                                      borderRadius: 1,
-                                      display: 'inline-block',
-                                      mt: 0.5
-                                    }}
-                                  >
-                                    {item.learningData.category}
-                                  </Typography>
-                                )}
-                                <Typography 
-                                  variant="caption" 
-                                  sx={{ 
-                                    color: 'text.secondary',
-                                    fontSize: '0.7rem',
-                                  }}
-                                >
-                                  {formatDate(item.timestamp)}
-                                </Typography>
-                              </Box>
-                              <Box
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                top: 8,
+                                right: 8,
+                                zIndex: 1,
+                              }}
+                            >
+                              <IconButton
+                                size="small"
                                 onClick={(e) => handleDeleteCachedItem(item.id, e)}
-                                sx={{ 
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  p: 0.5,
-                                  color: 'rgba(0,0,0,0.3)',
-                                  borderRadius: '50%',
-                                  cursor: 'pointer',
-                                  '&:hover': { 
-                                    color: '#FF6B6B',
-                                    backgroundColor: 'rgba(255,107,107,0.1)' 
-                                  }
+                                sx={{
+                                  bgcolor: 'rgba(255,255,255,0.8)',
+                                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                  '&:hover': {
+                                    bgcolor: 'rgba(255,255,255,0.9)',
+                                  },
                                 }}
                               >
-                                <DeleteIcon fontSize="small" />
-                              </Box>
+                                <DeleteIcon fontSize="small" sx={{ color: '#FF6B6B' }} />
+                              </IconButton>
                             </Box>
+                          </Box>
+                          <CardContent sx={{ p: 1.5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                            <Typography 
+                              variant="subtitle2" 
+                              sx={{ 
+                                fontWeight: 700,
+                                fontSize: '0.85rem',
+                                lineHeight: 1.2,
+                              }}
+                              noWrap
+                            >
+                              {item.learningData.object}
+                            </Typography>
+                            
+                            {item.learningData.category && (
+                              <Typography 
+                                variant="caption" 
+                                sx={{ 
+                                  color: 'text.primary',
+                                  fontSize: '0.7rem',
+                                  bgcolor: '#f0f0f0',
+                                  px: 0.5,
+                                  py: 0.2,
+                                  borderRadius: 1,
+                                  display: 'inline-block',
+                                  mt: 0.5,
+                                  maxWidth: 'fit-content'
+                                }}
+                              >
+                                {item.learningData.category}
+                              </Typography>
+                            )}
+                            
+                            <Typography 
+                              variant="caption" 
+                              sx={{ 
+                                color: 'text.secondary',
+                                fontSize: '0.7rem',
+                                mt: 'auto',
+                                pt: 0.5
+                              }}
+                            >
+                              {formatDate(item.timestamp)}
+                            </Typography>
                           </CardContent>
                         </CardActionArea>
                       </Card>
                     </Grid>
                   ))}
                 </Grid>
+                
+                {/* Add Load More button if there are more items */}
+                {cachedItems.length > 6 && (
+                  <Box sx={{ textAlign: 'center', mt: 3 }}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => navigate('/scan-history')}
+                      startIcon={<HistoryIcon />}
+                      sx={{
+                        borderRadius: 2,
+                        px: 3,
+                        py: 1,
+                        borderColor: '#6C63FF',
+                        color: '#6C63FF',
+                        '&:hover': {
+                          backgroundColor: 'rgba(108, 99, 255, 0.05)',
+                          borderColor: '#5753e0',
+                        }
+                      }}
+                    >
+                      View All History
+                    </Button>
+                  </Box>
+                )}
               </motion.div>
             )}
           </Box>

@@ -9,6 +9,7 @@ import Science from './pages/Science';
 import Math from './pages/Math';
 import Geography from './pages/Geography';
 import Learn from './pages/Learn';
+import ScanHistory from './pages/ScanHistory';
 import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -226,6 +227,7 @@ function App() {
           <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/scan" element={<AppShell><Scan /></AppShell>} />
           <Route path="/history" element={<AppShell><History /></AppShell>} />
+          <Route path="/scan-history" element={<AppShell><ScanHistory /></AppShell>} />
           <Route path="/science" element={<AppShell><Science /></AppShell>} />
           <Route path="/math" element={<AppShell><Math /></AppShell>} />
           <Route path="/geography" element={<AppShell><Geography /></AppShell>} />

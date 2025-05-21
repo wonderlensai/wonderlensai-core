@@ -192,7 +192,7 @@ const LearningCards = () => {
   const [speaking, setSpeaking] = useState(false);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const [currentSection, setCurrentSection] = useState(0);
-  
+
   // New state for vocabulary card swipe functionality
   const [vocabCardIndex, setVocabCardIndex] = useState(0);
   
@@ -646,7 +646,7 @@ const LearningCards = () => {
           <Box sx={{ mb: { xs: 12, md: 16 } }}>
             {/* Image and Main Card */}
             <Box sx={{ mb: 5 }}>
-              <motion.div
+          <motion.div
                 {...swipeHandlers}
                 initial="hidden"
                 animate="visible"
@@ -654,7 +654,7 @@ const LearningCards = () => {
                 variants={cardVariants}
               >
                 {/* Image Container with improved styling */}
-                {imageData && (
+            {imageData && (
                   <Box 
                     component={motion.div}
                     whileHover={{ scale: 1.02 }}
@@ -676,16 +676,16 @@ const LearningCards = () => {
                         backgroundColor: '#F0F4F8',
                       }}
                     >
-                      <img
-                        src={imageData}
+                <img
+                  src={imageData}
                         alt={`Scanned ${learningData.object}`}
-                        style={{
+                  style={{
                           position: 'absolute',
                           top: 0,
                           left: 0,
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
                         }}
                         onError={(e) => {
                           // If image fails to load from URL, show a placeholder
@@ -738,49 +738,49 @@ const LearningCards = () => {
                     position: 'relative'
                   }}
                 >
-                  {/* Left Arrow */}
-                  <IconButton
-                    sx={{
-                      position: 'absolute',
+              {/* Left Arrow */}
+              <IconButton
+                sx={{
+                  position: 'absolute',
                       left: { xs: -16, sm: -24 },
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      zIndex: 2,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 2,
                       background: 'rgba(255,255,255,0.9)',
-                      boxShadow: 2,
-                      display: currentSection === 0 ? 'none' : 'flex',
-                    }}
-                    onClick={() => setCurrentSection((prev) => Math.max(prev - 1, 0))}
-                    aria-label="Previous"
-                  >
-                    <ArrowBackIosNewIcon />
-                  </IconButton>
+                  boxShadow: 2,
+                  display: currentSection === 0 ? 'none' : 'flex',
+                }}
+                onClick={() => setCurrentSection((prev) => Math.max(prev - 1, 0))}
+                aria-label="Previous"
+              >
+                <ArrowBackIosNewIcon />
+              </IconButton>
 
                   <motion.div
                     whileHover={{ y: -5 }}
                   >
-                    <LearningCard
+              <LearningCard
                       ref={cardRef}
-                      sx={{
+                sx={{
                         background: `linear-gradient(135deg, ${lensColors[learningData.lenses[currentSection].name]}15 0%, ${lensColors[learningData.lenses[currentSection].name]}30 100%)`,
                         border: `3px solid ${lensColors[learningData.lenses[currentSection].name]}40`,
-                        mx: 'auto',
-                        width: '100%',
+                  mx: 'auto',
+                  width: '100%',
                         minHeight: { xs: 220, sm: 260 },
-                        display: 'flex',
-                        flexDirection: 'column',
-                        p: { xs: 3, sm: 4 },
-                        boxShadow: '0 12px 36px rgba(0,0,0,0.13)',
-                        position: 'relative',
-                      }}
-                    >
+                  display: 'flex',
+                  flexDirection: 'column',
+                  p: { xs: 3, sm: 4 },
+                  boxShadow: '0 12px 36px rgba(0,0,0,0.13)',
+                  position: 'relative',
+                }}
+              >
                       <CardContent sx={{ p: 0, width: '100%', height: '100%' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            {lensIcons[learningData.lenses[currentSection].name]}
-                            <Typography
-                              variant="h5"
-                              component="h2"
+                    {lensIcons[learningData.lenses[currentSection].name]}
+                    <Typography
+                      variant="h5"
+                      component="h2"
                               sx={{ 
                                 color: lensColors[learningData.lenses[currentSection].name], 
                                 textAlign: 'left', 
@@ -788,12 +788,12 @@ const LearningCards = () => {
                                 fontWeight: 700, 
                                 letterSpacing: 1 
                               }}
-                            >
-                              {learningData.lenses[currentSection].name}
-                            </Typography>
+                    >
+                      {learningData.lenses[currentSection].name}
+                    </Typography>
                           </Box>
-                          <IconButton
-                            onClick={() => handleSpeak(learningData.lenses[currentSection].text)}
+                    <IconButton
+                      onClick={() => handleSpeak(learningData.lenses[currentSection].text)}
                             sx={{ 
                               color: speaking ? '#FFD93D' : '#6C63FF', 
                               background: speaking ? '#FFFDE7' : 'transparent', 
@@ -802,10 +802,10 @@ const LearningCards = () => {
                               '&:hover': { background: 'rgba(255,255,255,0.7)' }
                             }}
                             aria-label={speaking ? "Stop speaking" : "Listen to card"}
-                          >
-                            <VolumeUpIcon sx={{ fontSize: 28 }} />
-                          </IconButton>
-                        </Box>
+                    >
+                      <VolumeUpIcon sx={{ fontSize: 28 }} />
+                    </IconButton>
+                  </Box>
                         
                         <Typography 
                           variant="body1" 
@@ -820,96 +820,65 @@ const LearningCards = () => {
                             lineHeight: 1.5
                           }}
                         >
-                          {learningData.lenses[currentSection].text.split(/(?<=[.!?])\s+/).map((sentence, idx) => (
-                            <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                              <CheckCircleIcon sx={{ color: lensColors[learningData.lenses[currentSection].name], fontSize: 18, mt: '2px', mr: 1 }} />
-                              <span>{sentence}</span>
-                            </Box>
-                          ))}
-                        </Typography>
+                    {learningData.lenses[currentSection].text.split(/(?<=[.!?])\s+/).map((sentence, idx) => (
+                      <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                        <CheckCircleIcon sx={{ color: lensColors[learningData.lenses[currentSection].name], fontSize: 18, mt: '2px', mr: 1 }} />
+                        <span>{sentence}</span>
+                      </Box>
+                    ))}
+                  </Typography>
                         
-                        {/* Integrated fun fact - only show if available and for certain cards */}
-                        {currentFact && currentSection % 2 === 0 && (
-                          <Box 
-                            sx={{ 
-                              mt: 2, 
-                              p: 2, 
-                              borderRadius: 2, 
-                              bgcolor: `${currentFact.color}15`,
-                              border: `1px dashed ${currentFact.color}`,
-                            }}
-                          >
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                              {getFactIcon(currentFact.type)}
-                              <Typography variant="subtitle1" sx={{ ml: 1, fontWeight: 700, color: currentFact.color }}>
-                                {currentFact.title}
-                              </Typography>
-                            </Box>
-                            <Typography 
-                              variant="body2" 
-                              sx={{ 
-                                fontFamily: '"Comic Neue", "Comic Sans MS", cursive',
-                                fontSize: '0.95rem',
-                                color: '#2D3748',
-                              }}
-                            >
-                              {currentFact.content}
-                            </Typography>
-                          </Box>
-                        )}
-                      </CardContent>
-                    </LearningCard>
+                        {/* Removed "Did You Know?" section */}
+                </CardContent>
+              </LearningCard>
                   </motion.div>
 
-                  {/* Right Arrow */}
-                  <IconButton
-                    sx={{
-                      position: 'absolute',
+              {/* Right Arrow */}
+              <IconButton
+                sx={{
+                  position: 'absolute',
                       right: { xs: -16, sm: -24 },
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      zIndex: 2,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 2,
                       background: 'rgba(255,255,255,0.9)',
-                      boxShadow: 2,
-                      display: currentSection === learningData.lenses.length - 1 ? 'none' : 'flex',
-                    }}
-                    onClick={() => setCurrentSection((prev) => Math.min(prev + 1, learningData.lenses.length - 1))}
-                    aria-label="Next"
-                  >
-                    <ArrowForwardIosIcon />
-                  </IconButton>
+                  boxShadow: 2,
+                  display: currentSection === learningData.lenses.length - 1 ? 'none' : 'flex',
+                }}
+                onClick={() => setCurrentSection((prev) => Math.min(prev + 1, learningData.lenses.length - 1))}
+                aria-label="Next"
+              >
+                <ArrowForwardIosIcon />
+              </IconButton>
                 </Box>
 
                 {/* Improved navigation dots with labels */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    mt: 1,
-                    mb: 4,
-                    flexWrap: 'wrap',
-                    gap: { xs: 0.5, sm: 1 },
-                    maxWidth: '100%',
-                    overflow: 'auto'
-                  }}
-                >
-                  {learningData.lenses.map((lens, index) => (
-                    <motion.div
-                      key={index}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  mt: 1,
+                  mb: 4,
+                  flexWrap: 'nowrap',
+                  width: '100%'
+                }}
+              >
+                {learningData.lenses.map((lens, index) => (
+                  <motion.div
+                    key={index}
                       animate={{ 
                         scale: currentSection === index ? 1.1 : 1, 
                         opacity: currentSection === index ? 1 : 0.7 
                       }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      style={{ display: 'inline-block' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    style={{ display: 'inline-block' }}
                       onClick={() => setCurrentSection(index)}
                     >
                       <Box
-                        sx={{
+                      sx={{
                           borderRadius: 2,
-                          px: { xs: 0.5, sm: 1 },
+                          px: { xs: 0.3, sm: 0.6 },
                           py: 0.5,
-                          mx: { xs: 0.3, sm: 0.5 },
                           bgcolor: currentSection === index ? `${lensColors[lens.name]}30` : 'transparent',
                           border: currentSection === index ? `1px solid ${lensColors[lens.name]}` : '1px solid transparent',
                           cursor: 'pointer',
@@ -918,8 +887,8 @@ const LearningCards = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           flexDirection: { xs: 'column', md: 'row' },
-                          minWidth: { xs: 35, sm: 40, md: 'auto' },
-                          maxWidth: { xs: 60, sm: 100, md: 'none' },
+                          minWidth: { xs: 20, sm: 30 },
+                          maxWidth: { xs: 40, sm: 70, md: 'none' },
                         }}
                       >
                         <Box
@@ -947,8 +916,8 @@ const LearningCards = () => {
                           {lens.name}
                         </Typography>
                       </Box>
-                    </motion.div>
-                  ))}
+                  </motion.div>
+                ))}
                 </Box>
               </motion.div>
 
@@ -1147,8 +1116,8 @@ const LearningCards = () => {
                           <Box sx={{ position: 'relative', mb: 2 }}>
                             {enhancedData.vocabulary.length > 1 && (
                               <>
-                                <IconButton
-                                  sx={{
+                <IconButton
+                  sx={{
                                     position: 'absolute',
                                     left: -12,
                                     top: '50%',
@@ -1164,7 +1133,7 @@ const LearningCards = () => {
                                   aria-label="Previous vocabulary card"
                                 >
                                   <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
-                                </IconButton>
+                </IconButton>
                                 
                                 <IconButton
                                   sx={{
@@ -1229,7 +1198,7 @@ const LearningCards = () => {
                                         px: 1
                                       }} 
                                     />
-                                  </Box>
+              </Box>
                                   
                                   {enhancedData?.vocabulary && enhancedData.vocabulary[vocabCardIndex]?.pronunciation && (
                                     <Typography 
@@ -1251,7 +1220,7 @@ const LearningCards = () => {
                                   <Typography variant="body1" sx={{ mb: 3, fontWeight: 500 }}>
                                     {enhancedData?.vocabulary && enhancedData.vocabulary[vocabCardIndex]?.translation}
                                   </Typography>
-                                </Box>
+            </Box>
                                 
                                 {enhancedData?.vocabulary && enhancedData.vocabulary[vocabCardIndex]?.example && (
                                   <Typography 
@@ -1270,7 +1239,12 @@ const LearningCards = () => {
                                 
                                 {/* Pagination dots for vocabulary cards */}
                                 {enhancedData?.vocabulary && enhancedData.vocabulary.length > 1 && (
-                                  <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                                  <Box sx={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'space-evenly', 
+                                    mt: 2,
+                                    width: '100%'
+                                  }}>
                                     {enhancedData.vocabulary.map((_, idx) => (
                                       <Box 
                                         key={idx}
@@ -1278,7 +1252,6 @@ const LearningCards = () => {
                                           width: 8,
                                           height: 8,
                                           borderRadius: '50%',
-                                          mx: 0.5,
                                           bgcolor: vocabCardIndex === idx 
                                             ? (vocabCardIndex % 2 === 0 ? '#6C63FF' : '#5EC6FF')
                                             : 'rgba(0,0,0,0.1)',
@@ -1291,7 +1264,7 @@ const LearningCards = () => {
                                   </Box>
                                 )}
                               </Paper>
-                            </motion.div>
+          </motion.div>
                           </Box>
                         )}
                       </Box>
