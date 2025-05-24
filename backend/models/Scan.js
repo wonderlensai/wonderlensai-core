@@ -41,6 +41,42 @@ class Scan {
     return data;
   }
 
+  static async findRecentWithLearningData(limit = 20, userAge = null) {
+    let query = supabase
+      .from('scans')
+      .select(`
+        id,
+        image_url,
+        created_at,
+        child_age,
+        openai_responses!inner (
+          id,
+          response_json,
+          created_at
+        )
+      `)
+      .not('image_url', 'is', null)
+      .not('openai_responses.response_json', 'is', null);
+    
+    // Add age-based filtering if user age is provided
+    if (userAge) {
+      // Show content from kids within ±2 years of user's age
+      const minAge = Math.max(6, userAge - 2);
+      const maxAge = Math.min(12, userAge + 2);
+      query = query
+        .gte('child_age', minAge)
+        .lte('child_age', maxAge);
+    }
+    
+    query = query
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
+  }
+
   static async deleteById(scanId, deviceId) {
     // First verify that the scan belongs to the device
     const { data: scan, error: scanError } = await supabase

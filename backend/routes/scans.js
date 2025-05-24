@@ -75,4 +75,40 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// GET /api/scans/community - Get recent scans from all users for Learn tab
+router.get('/community', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const userAge = parseInt(req.query.age) || null;
+    
+    // Get recent scans from all users with their learning data
+    const scans = await Scan.findRecentWithLearningData(limit, userAge);
+    
+    // Format the response
+    const communityScans = scans.map(scan => {
+      // Get the first OpenAI response for this scan
+      const openaiResponse = scan.openai_responses[0];
+      
+      if (!openaiResponse || !openaiResponse.response_json) {
+        return null;
+      }
+      
+      // Process the image URL to ensure it's properly formatted
+      const imageUrl = getPublicUrl(scan.image_url);
+      
+      return {
+        id: scan.id,
+        image_url: imageUrl,
+        timestamp: new Date(scan.created_at).getTime(),
+        learningData: openaiResponse.response_json
+      };
+    }).filter(Boolean); // Remove null entries
+    
+    res.json(communityScans);
+  } catch (error) {
+    console.error('[Community Scans] Error:', error);
+    res.status(500).json({ error: 'Failed to fetch community scans', details: error.message });
+  }
+});
+
 module.exports = router; 
