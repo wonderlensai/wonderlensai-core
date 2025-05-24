@@ -10,6 +10,8 @@ import Math from './pages/Math';
 import Geography from './pages/Geography';
 import Learn from './pages/Learn';
 import ScanHistory from './pages/ScanHistory';
+import AgeCollector from './components/AgeCollector';
+import { UserProvider } from './contexts/UserContext';
 import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -222,24 +224,53 @@ function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  const [userAge, setUserAge] = useState<number | null>(null);
+  const [showAgeCollector, setShowAgeCollector] = useState(false);
+
+  // Load age from localStorage on app start
+  useEffect(() => {
+    const savedAge = localStorage.getItem('wonderlens-user-age');
+    if (savedAge) {
+      setUserAge(parseInt(savedAge));
+    } else {
+      setShowAgeCollector(true);
+    }
+  }, []);
+
+  // Handle age selection
+  const handleAgeSelect = (age: number) => {
+    setUserAge(age);
+    localStorage.setItem('wonderlens-user-age', age.toString());
+    setShowAgeCollector(false);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Routes>
-          <Route path="/" element={<AppShell><Home /></AppShell>} />
-          <Route path="/home" element={<Navigate to="/" replace />} />
-          <Route path="/scan" element={<AppShell><Scan /></AppShell>} />
-          <Route path="/history" element={<AppShell><History /></AppShell>} />
-          <Route path="/scan-history" element={<AppShell><ScanHistory /></AppShell>} />
-          <Route path="/science" element={<AppShell><Science /></AppShell>} />
-          <Route path="/math" element={<AppShell><Math /></AppShell>} />
-          <Route path="/geography" element={<AppShell><Geography /></AppShell>} />
-          <Route path="/learning-card" element={<AppShell><LearningCards /></AppShell>} />
-          <Route path="/learn" element={<AppShell><Learn /></AppShell>} />
-          <Route path="/learn/:subject" element={<AppShell><LearningCards /></AppShell>} />
-          <Route path="/shared" element={<AppShell><SharedLearning /></AppShell>} />
-        </Routes>
+        {/* Age Collector Modal */}
+        <AgeCollector 
+          isVisible={showAgeCollector} 
+          onAgeSelect={handleAgeSelect} 
+        />
+        
+        {/* Main App Routes with User Context */}
+        <UserProvider age={userAge}>
+          <Routes>
+            <Route path="/" element={<AppShell><Home /></AppShell>} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/scan" element={<AppShell><Scan /></AppShell>} />
+            <Route path="/history" element={<AppShell><History /></AppShell>} />
+            <Route path="/scan-history" element={<AppShell><ScanHistory /></AppShell>} />
+            <Route path="/science" element={<AppShell><Science /></AppShell>} />
+            <Route path="/math" element={<AppShell><Math /></AppShell>} />
+            <Route path="/geography" element={<AppShell><Geography /></AppShell>} />
+            <Route path="/learning-card" element={<AppShell><LearningCards /></AppShell>} />
+            <Route path="/learn" element={<AppShell><Learn /></AppShell>} />
+            <Route path="/learn/:subject" element={<AppShell><LearningCards /></AppShell>} />
+            <Route path="/shared" element={<AppShell><SharedLearning /></AppShell>} />
+          </Routes>
+        </UserProvider>
       </Router>
     </ThemeProvider>
   );

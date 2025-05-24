@@ -4,6 +4,7 @@ import { Pagination } from 'swiper/modules';
 import ReactDOM from 'react-dom';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import modalState from '../utils/modalState';
 
 // Environment-specific API URL
 // If VITE_API_URL is not set, we assume we're running in the same domain as the API
@@ -110,10 +111,10 @@ const StoryModal = ({
   story: Story; 
   onClose: () => void;
 }) => {
-  // Prevent body scrolling when modal is open
+  // Set body overflow to hidden when modal opens
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
     return () => {
+      // Ensure scroll is unlocked when component unmounts
       document.body.style.overflow = '';
     };
   }, []);
@@ -230,6 +231,37 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  
+  // Subscribe to modal state changes
+  useEffect(() => {
+    console.log('🔍 Setting up modal subscription');
+    
+    // Update local state when modal state changes
+    const unsubscribe = modalState.subscribe((modalId) => {
+      const isOpen = modalId === 'story-modal';
+      console.log('🔍 Modal state changed, story-modal open:', isOpen);
+      setModalOpen(isOpen);
+      
+      // If modal was closed externally, reset state
+      if (!isOpen && selectedIdx !== null) {
+        console.log('🔍 Modal closed externally, resetting state');
+        setSelectedIdx(null);
+      }
+    });
+    
+    // Cleanup subscription on unmount
+    return () => {
+      console.log('🔍 Cleaning up modal subscription');
+      unsubscribe();
+      
+      // Also ensure modal is closed if component unmounts
+      if (modalState.isModalOpen('story-modal')) {
+        modalState.closeModal();
+      }
+    };
+  }, [selectedIdx]);
+  
   // Track read stories in local storage
   const [readStories, setReadStories] = useState<Record<string, boolean>>(() => {
     // Load read status from localStorage
@@ -315,6 +347,30 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
     });
   };
 
+  // Handle story selection with modal state
+  const handleStorySelect = (index: number) => {
+    console.log('🔍 Story selected:', index);
+    
+    // First set the index, then open the modal
+    setSelectedIdx(index);
+    
+    // Small delay to ensure state is updated before opening modal
+    setTimeout(() => {
+      modalState.openModal('story-modal');
+      
+      // Mark the selected story as read
+      if (orderedStories[index]) {
+        markAsRead(orderedStories[index].category);
+      }
+    }, 0);
+  };
+
+  // Handle closing the story modal
+  const handleCloseStory = () => {
+    console.log('🔍 Closing story modal');
+    modalState.closeModal();
+  };
+
   if (loading) {
     console.log('🔍 WonderLensDaily in loading state');
     return <div>Loading news...</div>;
@@ -340,7 +396,7 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
           display: 'flex', 
           gap: 16,
           overflowX: 'auto', 
-          padding: '12px 16px 16px 16px',
+          padding: '12px 6px 16px 6px',
           alignItems: 'center', 
           scrollbarWidth: 'none',
           WebkitOverflowScrolling: 'touch'
@@ -392,10 +448,7 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
                     overflow: 'hidden'
                   }}
                   tabIndex={0}
-                  onClick={() => {
-                    setSelectedIdx(_idx);
-                    markAsRead(story.category);
-                  }}
+                  onClick={() => handleStorySelect(_idx)}
                   onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.95)')} // Subtle press effect
                   onMouseUp={e => {
                     e.currentTarget.style.transform = 'scale(1.05)';
@@ -411,6 +464,12 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
                       if (e.currentTarget) e.currentTarget.style.transform = 'scale(1)';
                     }, 150);
                   }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleStorySelect(_idx);
+                    }
+                  }}
                 >
                   <span style={{ 
                     fontSize: 36,
@@ -425,13 +484,13 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
                 </div>
               </div>
               
-              {/* Category text below */}
+              {/* Category text below - updated to match quiz styling */}
               <span 
                 style={{ 
                   fontWeight: 600, 
-                  fontSize: 12, 
+                  fontSize: 16, // changed from 12 to 16 to match quiz
                   textAlign: 'center', 
-                  color: isRead(story.category) ? '#777' : '#444', 
+                  color: '#444', // changed from isRead conditional to match quiz
                   lineHeight: 1.2,
                   maxWidth: '100%',
                   overflow: 'hidden',
@@ -447,11 +506,11 @@ const WonderLensDaily: React.FC<{ country?: string; age?: number }> = ({ country
         </div>
       </div>
 
-      {/* Use portal for modals */}
-      {selectedIdx !== null && orderedStories[selectedIdx] && (
+      {/* Use portal for modals - use local modalOpen state to ensure re-renders */}
+      {modalOpen && selectedIdx !== null && orderedStories[selectedIdx] && (
         <StoryModal 
           story={orderedStories[selectedIdx]} 
-          onClose={() => setSelectedIdx(null)} 
+          onClose={handleCloseStory}
         />
       )}
     </div>

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { FaRocket, FaPalette, FaTree } from "react-icons/fa";
+import { FaRocket, FaPalette, FaTree, FaStar, FaHeart } from "react-icons/fa";
 import SocialGraph from "../components/SocialGraph";
 import Section from "../components/Section";
 import PageContainer from "../components/PageContainer";
 import WonderLensDaily from "../components/WonderLensDaily"; // Using the Daily News component
+import QuizSection from "../components/QuizSection"; // Import the new Quiz component
 
 // Updated logo with better quality
 const LOGO_URL = "https://zgbkpnceymplssmpxgsi.supabase.co/storage/v1/object/public/assets//Header_logo.png?width=300&quality=100";
@@ -37,6 +38,7 @@ const NEWS_AVATARS = [
   },
 ];
 
+// Static quiz data - no longer used, replaced by QuizSection component
 const QUIZZES = [
   {
     label: "Space Quiz",
@@ -69,118 +71,112 @@ const Home: React.FC = () => {
   const isIpad = typeof window !== 'undefined' && window.innerWidth >= 768;
 
   return (
-    <div className="space-y-5 md:space-y-8">
-      {/* Integrated app header with logo */}
-      <div className="app-header -mx-4 sm:-mx-6 px-4 sm:px-6 pt-5 pb-8 -mt-4 relative">
-        {/* Background decorative elements */}
-        <div className="absolute top-8 left-5 w-24 h-24 rounded-full opacity-10" style={{
-          background: 'radial-gradient(circle, var(--color-primary-light), transparent 70%)',
-        }}></div>
-        <div className="absolute top-12 right-6 w-20 h-20 rounded-full opacity-10" style={{
-          background: 'radial-gradient(circle, var(--color-secondary), transparent 70%)',
-        }}></div>
-        <div className="absolute bottom-4 left-1/4 w-16 h-16 rounded-full opacity-10" style={{
-          background: 'radial-gradient(circle, var(--color-accent), transparent 70%)',
-        }}></div>
-        
-        {/* Logo centered */}
-        <div className="flex justify-center items-center relative">
-          <img
-            src={LOGO_URL}
-            alt="WonderLensAI Logo"
-            style={{ 
-              width: isIpad ? '320px' : '270px',
-              height: 'auto',
-              objectFit: 'contain',
-              filter: 'drop-shadow(0 3px 6px rgba(94, 123, 255, 0.25))',
-            }}
-          />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full opacity-10 animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-pink-300 to-red-400 rounded-full opacity-15 animate-bounce" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-40 left-20 w-20 h-20 bg-gradient-to-br from-green-300 to-blue-400 rounded-full opacity-12 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 bg-gradient-to-br from-purple-300 to-indigo-400 rounded-full opacity-10 animate-bounce" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-cyan-200 to-blue-300 rounded-full opacity-8 animate-pulse" style={{ animationDelay: '3s' }}></div>
       </div>
 
-      {/* Content sections with responsive layout */}
-      <div className="md:grid md:grid-cols-2 md:gap-6 space-y-5 md:space-y-0">
-        {/* Daily News Section - Now using the WonderLensDaily component */}
-        <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
-          <Section title="Daily News">
-            <WonderLensDaily />
-          </Section>
-        </div>
-
-        {/* Quiz Section */}
-        <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
-          <Section title="Quiz">
-            <div 
-              className="flex md:grid overflow-x-auto w-full items-start hide-scrollbar px-1" 
-              style={{
-                WebkitOverflowScrolling: 'touch',
-                gridTemplateColumns: isIpad ? 'repeat(auto-fill, minmax(120px, 1fr))' : 'unset',
-                gridGap: '20px',
-              }}
-            >
-              {QUIZZES.map((quiz, idx) => (
-                <div
-                  key={quiz.label}
-                  className="flex-none flex flex-col items-center"
-                  style={{
-                    marginRight: isIpad ? '0' : '20px',
-                    width: isIpad ? 'auto' : '104px',
-                  }}
-                >
-                  {/* Image container */}
-                  <div 
-                    className="flex items-center justify-center cursor-pointer mb-3 relative overflow-hidden transition-all duration-300"
-                    onClick={() => alert(`${quiz.label} coming soon!`)}
-                    style={{
-                      width: isIpad ? '120px' : '100px',
-                      height: isIpad ? '120px' : '100px',
-                      backgroundColor: quiz.color,
-                      border: 'none',
-                      boxShadow: 'var(--shadow-md)',
-                      borderRadius: 'var(--radius-lg)',
-                    }}
-                  >
-                    {/* Gradient overlay for images */}
-                    <div className="absolute inset-0 opacity-20" style={{
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%)',
-                    }} />
-                    
-                    {quiz.image && (
-                      <img
-                        src={quiz.image}
-                        alt={quiz.label}
-                        className="w-full h-full object-cover"
-                        style={{ borderRadius: 'var(--radius-lg)' }}
-                        loading="eager"
-                      />
-                    )}
-                  </div>
-                  
-                  {/* Text container */}
-                  <div className="flex items-center justify-center gap-2 mt-1">
-                    <span style={{ fontSize: isIpad ? '18px' : '15px', color: quiz.iconColor }}>{quiz.icon}</span>
-                    <span className="font-bold text-center text-xs md:text-sm" style={{ color: 'var(--color-text-primary)' }}>
-                      {quiz.label}
-                    </span>
-                  </div>
-                </div>
-              ))}
+      <div className="relative z-10 space-y-6 md:space-y-8 pb-20">
+        {/* Enhanced App Header with Floating Elements */}
+        <div className="app-header -mx-4 sm:-mx-6 px-4 sm:px-6 pt-6 pb-10 -mt-4 relative overflow-hidden">
+          {/* Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 opacity-95"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          
+          {/* Floating Decorative Elements */}
+          <div className="absolute top-8 left-8 w-16 h-16 bg-white/20 rounded-full backdrop-blur-sm animate-float" style={{ animationDelay: '0s' }}>
+            <div className="w-full h-full flex items-center justify-center">
+              <FaStar className="text-white/80 text-xl" />
             </div>
-          </Section>
-        </div>
-      </div>
-
-      {/* Shared Learning Section - Full width on all devices */}
-      <div className="bg-white rounded-2xl p-5 md:p-6 kid-card shadow-md">
-        <Section title="Shared Learning">
-          <div className="w-full md:h-[400px] h-[320px] rounded-xl overflow-hidden flex items-center justify-center" style={{
-            boxShadow: 'var(--shadow-md)',
-            border: '1px solid rgba(94, 123, 255, 0.1)',
-            background: '#010D24', // Dark background for graph contrast
-          }}>
-            <SocialGraph />
           </div>
-        </Section>
+          <div className="absolute top-12 right-12 w-12 h-12 bg-white/15 rounded-full backdrop-blur-sm animate-float" style={{ animationDelay: '1s' }}>
+            <div className="w-full h-full flex items-center justify-center">
+              <FaHeart className="text-white/70 text-sm" />
+            </div>
+          </div>
+          <div className="absolute bottom-8 left-1/4 w-20 h-20 bg-white/10 rounded-full backdrop-blur-sm animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-6 right-1/4 w-14 h-14 bg-white/15 rounded-full backdrop-blur-sm animate-float" style={{ animationDelay: '0.5s' }}></div>
+          
+          {/* Logo with Enhanced Styling */}
+          <div className="flex justify-center items-center relative z-10">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-white/20 rounded-3xl backdrop-blur-sm"></div>
+              <img
+                src={LOGO_URL}
+                alt="WonderLensAI Logo"
+                className="relative z-10 drop-shadow-2xl"
+                style={{ 
+                  width: isIpad ? '320px' : '270px',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 8px 25px rgba(0, 0, 0, 0.3))',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Welcome Message */}
+          <div className="text-center mt-4 relative z-10">
+            {/* Removed welcome message */}
+          </div>
+        </div>
+
+        {/* Enhanced Content Grid */}
+        <div className="px-4 sm:px-6">
+          <div className="md:grid md:grid-cols-2 md:gap-8 space-y-6 md:space-y-0">
+            {/* Enhanced Daily News Section */}
+            <div className="group">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] relative overflow-hidden">
+                {/* Decorative gradient overlay */}
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500"></div>
+                
+                <Section title="Daily News">
+                  <WonderLensDaily />
+                </Section>
+              </div>
+            </div>
+
+            {/* Enhanced Quiz Section */}
+            <div className="group">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] relative overflow-hidden">
+                {/* Decorative gradient overlay */}
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-400 via-yellow-500 to-orange-500"></div>
+                
+                <Section title="Interactive Quiz">
+                  <QuizSection />
+                </Section>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Shared Learning Section */}
+          <div className="mt-8 group">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.01] relative overflow-hidden">
+              {/* Decorative gradient overlay */}
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-purple-400 via-indigo-500 to-blue-500"></div>
+              
+              <Section title="Learning Network">
+                <div className="w-full md:h-[400px] h-[320px] rounded-2xl overflow-hidden flex items-center justify-center relative" style={{
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
+                }}>
+                  {/* Decorative corner elements */}
+                  <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-white/30 rounded-tl-lg"></div>
+                  <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-white/30 rounded-tr-lg"></div>
+                  <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-white/30 rounded-bl-lg"></div>
+                  <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-white/30 rounded-br-lg"></div>
+                  
+                  <SocialGraph />
+                </div>
+              </Section>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
