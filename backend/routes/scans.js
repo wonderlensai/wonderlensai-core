@@ -79,10 +79,9 @@ router.delete('/:id', async (req, res) => {
 router.get('/community', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 20;
-    const userAge = parseInt(req.query.age) || null;
     
-    // Get recent scans from all users with their learning data
-    const scans = await Scan.findRecentWithLearningData(limit, userAge);
+    // Get recent scans from all users with their learning data (no age filtering)
+    const scans = await Scan.findRecentWithLearningData(limit);
     
     // Format the response
     const communityScans = scans.map(scan => {

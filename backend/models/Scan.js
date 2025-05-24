@@ -41,8 +41,8 @@ class Scan {
     return data;
   }
 
-  static async findRecentWithLearningData(limit = 20, userAge = null) {
-    let query = supabase
+  static async findRecentWithLearningData(limit = 20) {
+    const { data, error } = await supabase
       .from('scans')
       .select(`
         id,
@@ -56,23 +56,10 @@ class Scan {
         )
       `)
       .not('image_url', 'is', null)
-      .not('openai_responses.response_json', 'is', null);
-    
-    // Add age-based filtering if user age is provided
-    if (userAge) {
-      // Show content from kids within ±2 years of user's age
-      const minAge = Math.max(6, userAge - 2);
-      const maxAge = Math.min(12, userAge + 2);
-      query = query
-        .gte('child_age', minAge)
-        .lte('child_age', maxAge);
-    }
-    
-    query = query
+      .not('openai_responses.response_json', 'is', null)
       .order('created_at', { ascending: false })
       .limit(limit);
 
-    const { data, error } = await query;
     if (error) throw error;
     return data;
   }

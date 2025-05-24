@@ -170,7 +170,6 @@ const Learn: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedScan, setSelectedScan] = useState<CommunityScansResponse | null>(null);
-  const { age } = useUser();
   const navigate = useNavigate();
 
   // Fetch community scans
@@ -178,7 +177,6 @@ const Learn: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const ageParam = age ? `&age=${age}` : '';
       
       // Helper function to determine if we're running in development
       const isDevelopment = () => {
@@ -212,7 +210,7 @@ const Learn: React.FC = () => {
         return `${apiBaseUrl}${endpoint}`;
       };
       
-      const fullUrl = getApiUrl(`/api/scans/community?limit=100${ageParam}`);
+      const fullUrl = getApiUrl(`/api/scans/community?limit=100`);
       console.log('Environment:', isDevelopment() ? 'development' : 'production');
       console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
       console.log('Fetching community scans from:', fullUrl);
@@ -259,7 +257,7 @@ const Learn: React.FC = () => {
 
   useEffect(() => {
     fetchCommunityScans();
-  }, [age]);
+  }, []); // Removed age dependency
 
   const handleImageClick = (scan: CommunityScansResponse) => {
     setSelectedScan(scan);
