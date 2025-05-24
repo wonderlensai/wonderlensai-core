@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Modal } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCamera } from 'react-icons/fa';
-import { useUser } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 interface CommunityScansResponse {
@@ -372,7 +371,7 @@ const Learn: React.FC = () => {
           </Typography>
           <Typography style={{ fontSize: '16px', color: '#718096', maxWidth: '300px' }}>
             Be the first to scan something and share your learning journey with other kids!
-          </Typography>
+    </Typography>
         </div>
       </div>
     );

@@ -428,7 +428,12 @@ const QuizSection: React.FC<{ age?: number }> = ({ age = 8 }) => {
           >
             <div className="max-w-md mx-auto h-full flex flex-col">
               {/* Header - Simplified with just back button */}
-              <div className="flex items-center justify-start mb-6 pt-4 px-4">
+              <div 
+                className="flex items-center justify-start mb-6 px-4"
+                style={{
+                  paddingTop: 'calc(env(safe-area-inset-top) + 16px)', // Add safe area for iPhone notch
+                }}
+              >
                 <button
                   onClick={handleCloseQuiz}
                   className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-100 transition-all duration-200 active:scale-95 shadow-lg"
