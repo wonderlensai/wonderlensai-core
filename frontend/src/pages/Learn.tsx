@@ -179,11 +179,64 @@ const Learn: React.FC = () => {
       setLoading(true);
       setError(null);
       const ageParam = age ? `&age=${age}` : '';
-      const apiUrl = import.meta.env.VITE_API_URL || '';
-      const fullUrl = `${apiUrl}/api/scans/community?limit=100${ageParam}`;
+      
+      // Helper function to determine if we're running in development
+      const isDevelopment = () => {
+        return import.meta.env.DEV || 
+               window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1';
+      };
+      
+      // Get the correct API endpoint based on environment
+      const getApiUrl = (endpoint: string) => {
+        // In development without explicit VITE_API_URL, use localhost
+        if (isDevelopment() && !import.meta.env.VITE_API_URL) {
+          return `http://localhost:7001${endpoint}`;
+        }
+        
+        // For production environment or when VITE_API_URL is set
+        if (import.meta.env.PROD) {
+          // Try multiple potential API URLs in order of preference
+          // 1. Use VITE_API_URL from env if available
+          if (import.meta.env.VITE_API_URL) {
+            return `${import.meta.env.VITE_API_URL}${endpoint}`;
+          }
+          
+          // 2. Use Render backend URL (where the API is hosted)
+          const renderUrl = 'https://wonderlensai-core.onrender.com';
+          return `${renderUrl}${endpoint}`;
+        }
+        
+        // Otherwise use the configured API_BASE_URL (may be empty string if API is on same domain)
+        const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+        return `${apiBaseUrl}${endpoint}`;
+      };
+      
+      const fullUrl = getApiUrl(`/api/scans/community?limit=100${ageParam}`);
+      console.log('Environment:', isDevelopment() ? 'development' : 'production');
+      console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
       console.log('Fetching community scans from:', fullUrl);
       
       const response = await fetch(fullUrl);
+      
+      // Check if response is HTML (error page) instead of JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('Received non-JSON response. Content-Type:', contentType);
+        console.error('Response status:', response.status, response.statusText);
+        const text = await response.text();
+        console.error('Response body:', text.substring(0, 500) + '...');
+        
+        if (response.status === 404) {
+          setError('API endpoint not found. The backend might not be deployed or the route doesn\'t exist.');
+        } else if (response.status >= 500) {
+          setError('Backend server error. Please try again later.');
+        } else {
+          setError(`Unexpected response from server (${response.status}). Check console for details.`);
+        }
+        return;
+      }
+      
       if (response.ok) {
         const data = await response.json();
         console.log('Successfully fetched', data.length, 'community scans');
@@ -194,7 +247,11 @@ const Learn: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching community scans:', error);
-      setError('Unable to connect to the server');
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        setError('Cannot connect to backend. Check if the API server is running.');
+      } else {
+        setError('Unable to connect to the server');
+      }
     } finally {
       setLoading(false);
     }
